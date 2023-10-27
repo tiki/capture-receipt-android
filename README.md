@@ -2,17 +2,15 @@
 
 ## Introduction
 
-Welcome to the TIKI Receipt Capture SDK, designed to empower users to capture and license their purchase data from various sources, including scanning physical receipts, scraping email accounts, and connecting online retailer accounts. All data collected is considered zero-party data, making it legally owned by end-users and licensed to businesses in exchange for fair compensation.
+TIKI Receipt Capture SDK is designed to empower users to capture and license their purchase data from various sources, including scanning physical receipts, scraping email accounts, and connecting online retailer accounts. All data collected is considered zero-party data, making it legally owned by end-users and licensed to businesses in exchange for fair compensation.
 
 With this SDK, companies can easily integrate data extraction from receipts, manage data property and licensing, and seamlessly publish data to the TIKI platform.
 
-Raw receipt data is securely stored in a hosted [Iceberg](http://iceberg.apache.org) cleanroom, allowing you to query, ETL (Extract, Transform, Load), and train models against it. A sample cleanroom can be found in our [purchase repository](https://github.com/tiki/purchase).
-
 Receipt parsing is handled on-device, ensuring security, privacy, and compliance with App Store and Play Store regulations. This process is facilitated by the closed-source, licensed SDK [Microblink](https://microblink.com). For new customers, we offer a **free Microblink license**. Schedule a meeting at [mytiki.com](https://mytiki.com) to acquire a license key.
 
-## Features
+Raw receipt data is securely stored in a hosted [Iceberg](http://iceberg.apache.org) cleanroom, allowing you to query, ETL (Extract, Transform, Load), and train models against it. A sample cleanroom can be found in our [purchase repository](https://github.com/tiki/purchase).
 
-The Receipt Capture SDK offers a range of powerful features for data capture, licensing, and publishing:
+## Features
 
 ### 1. Get Purchase Data from Physical and Digital Receipts
 
@@ -175,20 +173,57 @@ ReceiptCapture.initialize(
 ## SDK Usage
 
 ### Scanning a Physical Receipt
+The scan function initiates the process of scanning a physical receipt using the device's camera. It is designed to make receipt capture an efficient and straightforward task within your Android application. Here's how the function works:
 
-1. Open the camera using the SDK, allowing users to take a picture of their receipt.
-2. Process the picture locally on the user's device with Microblink's SDK to extract the receipt data.
-3. The TIKI SDK will create a license and publish the receipt data to TIKI.
-4. The `ReceiptCapture.scan` method will return the receipt details.
-
-### Add an Email or Retailer Account
-
-Before scraping emails for receipts or grabbing orders from retailer accounts, users need to log in to their accounts. This process
-
- varies from one retailer or email provider to another, including 2FA, app passwords, and OAuth authentication. However, all this complexity is handled internally by our SDK. You need to call `ReceiptCapture.login` method with two callbacks for success and error. If the login succeeds, it will call the success callback, passing the Account. If it fails, it will return the error callback with the error.
+1. The SDK opens the device's camera for the user.
+2. The user can take a picture of the physical receipt using the camera.
+3. The captured image is processed locally on the user's device, utilizing the Microblink SDK to extract the receipt data.
+4. The TIKI SDK adds the license to the receipt data and publishes it to the TIKI platform.
+5. The function returns a Receipt object containing the details of the scanned receipt.
 
 **Kotlin:**
 
+```kotlin
+ReceiptCapture.scan(
+    context = applicationContext,
+    onReceipt = { receipt ->
+        // Process the retrieved receipt data
+        println("Receipt Data: $receipt")
+    },
+    onError = { error ->
+        // Handle errors during the scanning process
+        println("Error: $error")
+    },
+    onComplete = {
+        // Perform actions upon completion of the scan process
+        println("Scan process completed")
+    }
+)
+```
+
+**Java:**
+```java
+ReceiptCapture.scan(
+    applicationContext,
+    receipt -> {
+        // Process the retrieved receipt data
+        System.out.println("Receipt Data: " + receipt);
+    },
+    error -> {
+        // Handle errors during the scanning process
+        System.out.println("Error: " + error);
+    },
+    () -> {
+        // Perform actions upon completion of the scan process
+        System.out.println("Scan process completed");
+    }
+);
+```
+
+### Add an Email or Retailer Account
+Before scraping emails for receipts or grabbing orders from retailer accounts, users need to log in to their accounts. This process varies from one retailer or email provider to another, including 2FA, app passwords, and OAuth authentication. However, all this complexity is handled internally by our SDK. You need to call `ReceiptCapture.login` method with two callbacks for success and error. If the login succeeds, it will call the success callback, passing the Account. If it fails, it will return the error callback with the error.
+
+**Kotlin:**
 ```kotlin
 ReceiptCapture.login(
     context,
@@ -201,7 +236,6 @@ ReceiptCapture.login(
 ```
 
 **Java:**
-
 ```java
 ReceiptCapture.login(
     context, 
@@ -218,7 +252,6 @@ ReceiptCapture.login(
 ```
 
 ### List Connected Accounts
-
 ```
 ReceiptCapture.accounts()
 ```
@@ -226,7 +259,6 @@ ReceiptCapture.accounts()
 ### Remove Accounts
 
 **Kotlin:**
-
 ```kotlin
 ReceiptCapture.logout(
     context,
@@ -238,7 +270,6 @@ ReceiptCapture.logout(
 ```
 
 **Java:**
-
 ```java
 ReceiptCapture.logout(
     context, 
@@ -260,7 +291,6 @@ Don't worry; license records issued are backed up to TIKI's immutable, hosted st
 #### One Account
 
 **Kotlin:**
-
 ```kotlin
 val account: Account = ReceiptCapture.account(
     "ACCOUNT USERNAME",
@@ -270,14 +300,13 @@ val account: Account = ReceiptCapture.account(
 ReceiptCapture.receipts(
     context,
     account,
-    { licenseRecord -> print(licenseRecord) }, // callback for each receipt
+    { receipt -> println("Receipt Data: $receipt")},
     { error -> throw error }, // error callback
     { print("Get receipts for ${account.username} completed") } // on complete callback
 )
 ```
 
 **Java:**
-
 ```java
 Account account = ReceiptCapture.account("ACCOUNT USERNAME", AccountCommon.GMAIL);
 ReceiptCapture.receipts(context, account,
@@ -296,18 +325,16 @@ ReceiptCapture.receipts(context, account,
 #### All Email or All Retailer Accounts
 
 **Kotlin:**
-
 ```kotlin
 ReceiptCapture.receipts(context,
     AccountType.EMAIL, // or AccountType.RETAILER
-    { licenseRecord -> print(licenseRecord) }, // callback for each receipt
+    { receipt -> println("Receipt Data: $receipt")},
     { error -> throw error }, // error callback
     { print("Get receipts for ${account.username} completed") } // on complete callback
 )
 ```
 
 **Java:**
-
 ```java
 ReceiptCapture.receipts(context,
     AccountType.EMAIL, // or AccountType.RETAILER
@@ -329,7 +356,7 @@ ReceiptCapture.receipts(context,
 
 ```kotlin
 ReceiptCapture.receipts(context,
-    { licenseRecord -> print(licenseRecord) }, // callback for each receipt
+    { receipt -> println("Receipt Data: $receipt")},
     { error -> throw error }, // error callback
     { print("Get receipts for ${account.username} completed") } // on complete callback
 )
