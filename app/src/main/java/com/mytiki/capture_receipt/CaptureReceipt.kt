@@ -3,12 +3,12 @@ package com.mytiki.capture_receipt
 import android.content.Context
 
 /**
- * The ReceiptCapture object provides methods to interact with the TIKI Receipt Capture SDK.
+ * The CaptureReceipt object provides methods to interact with the TIKI Capture Receipt SDK.
  */
-object ReceiptCapture {
+object CaptureReceipt {
 
     /**
-     * Initialize the Receipt Capture SDK.
+     * Initialize the Capture Receipt SDK.
      *
      * @param userId The user's unique identifier.
      * @param options Configuration options for the SDK.

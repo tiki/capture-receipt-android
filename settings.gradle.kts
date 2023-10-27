@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Receipt Capture"
+rootProject.name = "Capture Receipt"
 include(":app")
  

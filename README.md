@@ -1,8 +1,8 @@
-# Receipt Capture SDK - Android
+# Capture Receipt SDK - Android
 
 ## Introduction
 
-TIKI Receipt Capture SDK is designed to empower users to capture and license their purchase data from various sources, including scanning physical receipts, scraping email accounts, and connecting online retailer accounts. All data collected is considered zero-party data, making it legally owned by end-users and licensed to businesses in exchange for fair compensation.
+TIKI Capture Receipt SDK is designed to empower users to capture and license their purchase data from various sources, including scanning physical receipts, scraping email accounts, and connecting online retailer accounts. All data collected is considered zero-party data, making it legally owned by end-users and licensed to businesses in exchange for fair compensation.
 
 With this SDK, companies can easily integrate data extraction from receipts, manage data property and licensing, and seamlessly publish data to the TIKI platform.
 
@@ -14,7 +14,7 @@ Raw receipt data is securely stored in a hosted [Iceberg](http://iceberg.apache.
 
 ### 1. Get Purchase Data from Physical and Digital Receipts
 
-Receipt Capture seamlessly integrates with the [Microblink](https://microblink.com/) platform to extract data from both physical and digital receipts. This versatile feature ensures that you can collect information from a wide variety of sources.
+Capture Receipt seamlessly integrates with the [Microblink](https://microblink.com/) platform to extract data from both physical and digital receipts. This versatile feature ensures that you can collect information from a wide variety of sources.
 
 ### 2. Handle Data Licensing and Compensation with TIKI
 
@@ -33,9 +33,9 @@ Before getting started, ensure your Android project meets the following requirem
 - `compileSdkVersion` should be equal to or greater than 33.
 - `targetSdkVersion` should be equal to or greater than 33.
 
-### 1. Add Receipt Capture SDK Dependency
+### 1. Add Capture Receipt SDK Dependency
 
-To integrate the Receipt Capture SDK into your project, add the following dependency to your Gradle build file:
+To integrate the Capture Receipt SDK into your project, add the following dependency to your Gradle build file:
 
 ```gradle
 implementation "com.mytiki:capture-receipt:0.0.1"
@@ -72,12 +72,12 @@ android {
 
 ### Initialization
 
-During SDK initialization, Receipt Capture initializes the TIKI and Microblink SDKs and creates a License Record for the data provided by users. You need to provide the company's information and the API keys for TIKI and Microblink. Here's how you can initialize the SDK in both Kotlin and Java:
+During SDK initialization, Capture Receipt initializes the TIKI and Microblink SDKs and creates a License Record for the data provided by users. You need to provide the company's information and the API keys for TIKI and Microblink. Here's how you can initialize the SDK in both Kotlin and Java:
 
 **Kotlin:**
 
 ```kotlin
-ReceiptCapture.initialize(
+CaptureReceipt.initialize(
     "YOUR USER ID",
     Config(
         Company(
@@ -98,7 +98,7 @@ ReceiptCapture.initialize(
 **Java:**
 
 ```java
-ReceiptCapture.initialize(
+CaptureReceipt.initialize(
     "YOUR USER ID",
     new Config(
         new Company(
@@ -120,12 +120,12 @@ Now, users can provide their receipt data, and the SDK will handle the licensing
 
 ### Initialize Gmail and/or Outlook APIs
 
-Receipt Capture utilizes IMAP for email scraping as the default method. For an enhanced user experience and improved accuracy, we recommend considering the use of the [Gmail API](https://developers.google.com/gmail/api) and [Outlook API](https://docs.microsoft.com/en-us/outlook/rest/overview) for email scraping. The utilization of these APIs is optional, and you have the flexibility to choose either one, or both.
+Capture Receipt utilizes IMAP for email scraping as the default method. For an enhanced user experience and improved accuracy, we recommend considering the use of the [Gmail API](https://developers.google.com/gmail/api) and [Outlook API](https://docs.microsoft.com/en-us/outlook/rest/overview) for email scraping. The utilization of these APIs is optional, and you have the flexibility to choose either one, or both.
 
 **Kotlin:**
 
 ```kotlin
-ReceiptCapture.initialize(
+CaptureReceipt.initialize(
     "THE USER ID",
     Config(
         Company(
@@ -149,7 +149,7 @@ ReceiptCapture.initialize(
 **Java:**
 
 ```java
-ReceiptCapture.initialize(
+CaptureReceipt.initialize(
     "YOUR USER ID",
     new Config(
         new Company(
@@ -173,7 +173,7 @@ ReceiptCapture.initialize(
 ## SDK Usage
 
 ### Scanning a Physical Receipt
-The scan function initiates the process of scanning a physical receipt using the device's camera. It is designed to make receipt capture an efficient and straightforward task within your Android application. Here's how the function works:
+The scan function initiates the process of scanning a physical receipt using the device's camera. It is designed to make capture receipt an efficient and straightforward task within your Android application. Here's how the function works:
 
 1. The SDK opens the device's camera for the user.
 2. The user can take a picture of the physical receipt using the camera.
@@ -184,7 +184,7 @@ The scan function initiates the process of scanning a physical receipt using the
 **Kotlin:**
 
 ```kotlin
-ReceiptCapture.scan(
+CaptureReceipt.scan(
     context = applicationContext,
     onReceipt = { receipt ->
         // Process the retrieved receipt data
@@ -203,7 +203,7 @@ ReceiptCapture.scan(
 
 **Java:**
 ```java
-ReceiptCapture.scan(
+CaptureReceipt.scan(
     applicationContext,
     receipt -> {
         // Process the retrieved receipt data
@@ -221,11 +221,11 @@ ReceiptCapture.scan(
 ```
 
 ### Add an Email or Retailer Account
-Before scraping emails for receipts or grabbing orders from retailer accounts, users need to log in to their accounts. This process varies from one retailer or email provider to another, including 2FA, app passwords, and OAuth authentication. However, all this complexity is handled internally by our SDK. You need to call `ReceiptCapture.login` method with two callbacks for success and error. If the login succeeds, it will call the success callback, passing the Account. If it fails, it will return the error callback with the error.
+Before scraping emails for receipts or grabbing orders from retailer accounts, users need to log in to their accounts. This process varies from one retailer or email provider to another, including 2FA, app passwords, and OAuth authentication. However, all this complexity is handled internally by our SDK. You need to call `CaptureReceipt.login` method with two callbacks for success and error. If the login succeeds, it will call the success callback, passing the Account. If it fails, it will return the error callback with the error.
 
 **Kotlin:**
 ```kotlin
-ReceiptCapture.login(
+CaptureReceipt.login(
     context,
     "USERNAME FOR LOGIN",
     "PASSWORD FOR LOGIN",
@@ -237,7 +237,7 @@ ReceiptCapture.login(
 
 **Java:**
 ```java
-ReceiptCapture.login(
+CaptureReceipt.login(
     context, 
     "USERNAME FOR LOGIN",
     "PASSWORD FOR LOGIN", 
@@ -253,14 +253,14 @@ ReceiptCapture.login(
 
 ### List Connected Accounts
 ```
-ReceiptCapture.accounts()
+CaptureReceipt.accounts()
 ```
 
 ### Remove Accounts
 
 **Kotlin:**
 ```kotlin
-ReceiptCapture.logout(
+CaptureReceipt.logout(
     context,
     "USERNAME FOR LOGIN",
     AccountCommon.GMAIL, // an enum that identifies the possible accounts
@@ -271,7 +271,7 @@ ReceiptCapture.logout(
 
 **Java:**
 ```java
-ReceiptCapture.logout(
+CaptureReceipt.logout(
     context, 
     "USERNAME FOR LOGIN",
     AccountCommon.GMAIL, // an enum that identifies the account type
@@ -292,12 +292,12 @@ Don't worry; license records issued are backed up to TIKI's immutable, hosted st
 
 **Kotlin:**
 ```kotlin
-val account: Account = ReceiptCapture.account(
+val account: Account = CaptureReceipt.account(
     "ACCOUNT USERNAME",
     AccountCommon.GMAIL,
 )
 
-ReceiptCapture.receipts(
+CaptureReceipt.receipts(
     context,
     account,
     { receipt -> println("Receipt Data: $receipt")},
@@ -308,8 +308,8 @@ ReceiptCapture.receipts(
 
 **Java:**
 ```java
-Account account = ReceiptCapture.account("ACCOUNT USERNAME", AccountCommon.GMAIL);
-ReceiptCapture.receipts(context, account,
+Account account = CaptureReceipt.account("ACCOUNT USERNAME", AccountCommon.GMAIL);
+CaptureReceipt.receipts(context, account,
     (LicenseRecord licenseRecord) -> {
         System.out.println(licenseRecord);
     },
@@ -326,7 +326,7 @@ ReceiptCapture.receipts(context, account,
 
 **Kotlin:**
 ```kotlin
-ReceiptCapture.receipts(context,
+CaptureReceipt.receipts(context,
     AccountType.EMAIL, // or AccountType.RETAILER
     { receipt -> println("Receipt Data: $receipt")},
     { error -> throw error }, // error callback
@@ -336,7 +336,7 @@ ReceiptCapture.receipts(context,
 
 **Java:**
 ```java
-ReceiptCapture.receipts(context,
+CaptureReceipt.receipts(context,
     AccountType.EMAIL, // or AccountType.RETAILER
     (LicenseRecord licenseRecord) -> {
         System.out.println(licenseRecord);
@@ -355,7 +355,7 @@ ReceiptCapture.receipts(context,
 **Kotlin:**
 
 ```kotlin
-ReceiptCapture.receipts(context,
+CaptureReceipt.receipts(context,
     { receipt -> println("Receipt Data: $receipt")},
     { error -> throw error }, // error callback
     { print("Get receipts for ${account.username} completed") } // on complete callback
@@ -365,7 +365,7 @@ ReceiptCapture.receipts(context,
 **Java:**
 
 ```java
-ReceiptCapture.receipts(context,
+CaptureReceipt.receipts(context,
     (LicenseRecord licenseRecord) -> {
         System.out.println(licenseRecord);
     },
