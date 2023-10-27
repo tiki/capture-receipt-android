@@ -1,5 +1,3 @@
-Certainly, here's the improved version of your documentation:
-
 # Receipt Capture SDK - Android
 
 ## Introduction
