@@ -10,9 +10,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {  url = uri("https://maven.microblink.com") }
     }
 }
 
 rootProject.name = "Capture Receipt"
-include(":app")
- 
+include(":CaptureReceipt")
