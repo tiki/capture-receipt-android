@@ -6,15 +6,41 @@
 package com.mytiki.capture_receipt
 
 import android.content.Context
-import com.mytiki.capture_receipt.config.Config
+import com.mytiki.capture_receipt.account.Account
+import com.mytiki.capture_receipt.config.Configuration
 import com.mytiki.capture_receipt.receipt.Receipt
-import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.capture_receipt.account.AccountCommon
+import com.mytiki.capture_receipt.retailer.Retailer
+import com.mytiki.sdk.capture.receipt.capacitor.Physical
+import com.mytiki.sdk.capture.receipt.capacitor.email.Email
+import com.mytiki.tiki_sdk_android.TikiSdk
+import com.mytiki.tiki_sdk_android.channel.Channel
+import com.mytiki.tiki_sdk_android.trail.License
+import com.mytiki.tiki_sdk_android.trail.Tag
+import com.mytiki.tiki_sdk_android.trail.TagCommon
+import com.mytiki.tiki_sdk_android.trail.Title
+import com.mytiki.tiki_sdk_android.trail.TitleRecord
+import com.mytiki.tiki_sdk_android.trail.Use
+import com.mytiki.tiki_sdk_android.trail.Usecase
+import com.mytiki.tiki_sdk_android.trail.UsecaseCommon
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+
 
 /**
  * The CaptureReceipt object provides methods to interact with the TIKI Capture Receipt SDK.
  */
 object CaptureReceipt {
+    lateinit var configuration: Configuration
+    val license: License? = null
+    val userId: String? = null
+    var title: TitleRecord? = null
+
+    fun config(config: Configuration){
+        configuration = config
+    }
 
     /**
      * Initialize the Capture Receipt SDK.
@@ -22,7 +48,52 @@ object CaptureReceipt {
      * @param userId The user's unique identifier.
      * @param options Configuration options for the SDK.
      */
-    fun initialize(userId: String, options: Config) {}
+    fun initialize(userId: String, context: Context, onException: (Exception) -> Unit) {
+        val deferredTikiSdk = TikiSdk.initialize(userId, configuration.tikiPublishingID, context)
+
+        val deferredEmail = Email().initialize(context, configuration.microblinkLicenseKey, configuration.productIntelligenceKey) {
+            if (it != null) {
+                onException(it)
+            }
+        }
+        val deferredRetailer = Retailer().initialize(context, configuration.microblinkLicenseKey, configuration.productIntelligenceKey) {
+            if (it != null) {
+                onException(it)
+            }
+        }
+        val deferredPhysical = Physical().initialize(context, configuration.microblinkLicenseKey, configuration.productIntelligenceKey) {
+            if (it != null) {
+                onException(it)
+            }
+        }
+        MainScope().async {
+
+            title = try{
+                TikiSdk.trail.title.get(userId).await()
+            } catch (ex: Exception){
+                null
+            }
+
+            if(title == null){
+                try{
+                    title = TikiSdk.trail.title.create(userId, listOf(Tag(TagCommon.PURCHASE_HISTORY))).await()
+                } catch (_: Exception){}
+            }
+
+
+            awaitAll(deferredTikiSdk, deferredEmail, deferredRetailer, deferredPhysical)
+            TikiSdk.trail.license.create(
+                TikiSdk.trail.title.get(userId).toString(),
+                listOf(
+                    Use(
+                        listOf( Usecase(UsecaseCommon.ANALYTICS)),
+                        listOf("*")
+                    ),
+                ),
+                configuration.terms
+            )
+        }
+    }
 
     /**
      * Initiates a scan for a physical receipt using the device's camera.
@@ -41,7 +112,7 @@ object CaptureReceipt {
     fun scan(
         context: Context,
         onReceipt: (Receipt) -> Void,
-        onError: (Error) -> Void,
+        onError: (Exception) -> Unit,
         onComplete: () -> Void
     ) {}
 
@@ -62,7 +133,7 @@ object CaptureReceipt {
         password: String,
         accountType: AccountCommon,
         onSuccess: (Account) -> Void,
-        onError: (Error) -> Void
+        onError: (Exception) -> Unit
     ) {}
 
     /**
@@ -86,7 +157,7 @@ object CaptureReceipt {
         context: Context,
         username: String,
         onSuccess: () -> Void,
-        onError: (Error) -> Void
+        onError: (Exception) -> Unit
     ) {}
 
     /**
@@ -109,7 +180,7 @@ object CaptureReceipt {
         context: Context,
         account: AccountCommon,
         onReceipt: (Receipt) -> Void,
-        onError: (Error) -> Void,
+        onError: (Exception) -> Unit,
         onComplete: () -> Void
     ){}
 
@@ -132,7 +203,7 @@ object CaptureReceipt {
         context: Context,
         account: Account,
         onReceipt: (Receipt) -> Void,
-        onError: (Error) -> Void,
+        onError: (Exception) -> Unit,
         onComplete: () -> Void
     ){}
 
@@ -155,7 +226,7 @@ object CaptureReceipt {
     fun receipts(
         context: Context,
         onReceipt: (Receipt) -> Void,
-        onError: (Error) -> Void,
+        onError: (Exception) -> Unit,
         onComplete: () -> Void
     ){}
 

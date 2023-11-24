@@ -19,11 +19,13 @@ import com.microblink.linking.AccountLinkingException
 import com.microblink.linking.BlinkReceiptLinkingSdk
 import com.microblink.linking.PasswordCredentials
 import com.microblink.linking.VERIFICATION_NEEDED
-import com.microblink.linking.Account as MbAccount
+import com.mytiki.capture_receipt.R
+import com.mytiki.capture_receipt.account.Account
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import com.microblink.linking.Account as MbAccount
 
 typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 
@@ -45,7 +47,7 @@ class Retailer {
         context: Context,
         licenseKey: String,
         productKey: String,
-        onError: (msg: String) -> Unit,
+        onError: (error: Exception?) -> Unit,
     ): CompletableDeferred<Unit> {
         val isLinkInitialized = CompletableDeferred<Unit>()
         BlinkReceiptLinkingSdk.licenseKey = licenseKey
@@ -56,7 +58,7 @@ class Retailer {
             }
 
             override fun onException(ex: Throwable) {
-                onError(ex.message ?: "Retailer initialization error. $ex")
+                onError(ex as Exception)
             }
 
         })

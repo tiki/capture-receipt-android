@@ -19,10 +19,8 @@ import com.microblink.digital.Provider
 import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
+import com.mytiki.capture_receipt.account.Account
 import com.mytiki.capture_receipt.email.deleteImapScanTime
-import com.mytiki.sdk.capture.receipt.capacitor.OnAccountCallback
-import com.mytiki.sdk.capture.receipt.capacitor.OnCompleteCallback
-import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.capture_receipt.account.AccountCommon
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
@@ -51,7 +49,7 @@ class Email {
         context: Context,
         licenseKey: String,
         productKey: String,
-        onError: (msg: String?) -> Unit,
+        onError: (error: Exception?) -> Unit,
     ): CompletableDeferred<Unit> {
         val isInitialized = CompletableDeferred<Unit>()
         BlinkReceiptDigitalSdk.productIntelligenceKey(productKey)
@@ -64,7 +62,7 @@ class Email {
                 }
 
                 override fun onException(ex: Throwable) {
-                    onError(ex.message)
+                    onError(ex as Exception)
                 }
             }
         )
@@ -204,9 +202,9 @@ class Email {
      */
     fun accounts(
         context: Context,
-        onAccount: OnAccountCallback,
+        onAccount: (account: Account) -> Unit,
         onError: ((msg: String) -> Unit),
-        onComplete: OnCompleteCallback?
+        onComplete: (() -> Unit)?
     ) {
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { credentials ->
