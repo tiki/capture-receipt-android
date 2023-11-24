@@ -8,7 +8,6 @@ package com.mytiki.capture_receipt
 import android.content.Context
 import com.mytiki.capture_receipt.account.Account
 import com.mytiki.capture_receipt.account.AccountCommon
-import com.mytiki.capture_receipt.config.Configuration
 import com.mytiki.capture_receipt.receipt.Receipt
 import com.mytiki.capture_receipt.retailer.Retailer
 import com.mytiki.sdk.capture.receipt.capacitor.Physical
@@ -23,22 +22,23 @@ import com.mytiki.tiki_sdk_android.trail.Usecase
 import com.mytiki.tiki_sdk_android.trail.UsecaseCommon
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 
 
 /**
  * The CaptureReceipt object provides methods to interact with the TIKI Capture Receipt SDK.
  */
 object CaptureReceipt {
-    lateinit var configuration: Configuration
+    var configuration: Configuration? = null
 
     var license: License? = null
     var userId: String? = null
     var title: TitleRecord? = null
 
-//    physical
-//    email
-//    retailer
+    val email: Email = Email()
+    val retailer: Retailer = Retailer()
+    val physical: Physical = Physical()
+
+
 
     fun config(config: Configuration) {
         configuration = config
@@ -50,64 +50,54 @@ object CaptureReceipt {
      * @param userId The user's unique identifier.
      * @param options Configuration options for the SDK.
      */
-    fun initialize(userId: String, context: Context, onException: (Exception) -> Unit) {
-        val deferredTikiSdk = TikiSdk.initialize(userId, configuration.tikiPublishingID, context)
+    fun initialize(userId: String, context: Context, onException: (Throwable) -> Unit) {
+        if (configuration != null) {
+            email.initialize(
+                context,
+                configuration!!.microblinkLicenseKey,
+                configuration!!.productIntelligenceKey
+            ) { onException(it) }
+            retailer.initialize(
+                context,
+                configuration!!.microblinkLicenseKey,
+                configuration!!.productIntelligenceKey
+            ) { onException(it) }
+            physical.initialize(
+                context,
+                configuration!!.microblinkLicenseKey,
+                configuration!!.productIntelligenceKey
+            ) { onException(it) }
 
-        val deferredEmail = Email().initialize(
-            context,
-            configuration.microblinkLicenseKey,
-            configuration.productIntelligenceKey
-        ) {
-            if (it != null) {
-                onException(it)
-            }
-        }
-        val deferredRetailer = Retailer().initialize(
-            context,
-            configuration.microblinkLicenseKey,
-            configuration.productIntelligenceKey
-        ) {
-            if (it != null) {
-                onException(it)
-            }
-        }
-        Physical().initialize(
-            context,
-            configuration.microblinkLicenseKey,
-            configuration.productIntelligenceKey
-        ) {
-            if (it != null) {
-                onException(it)
-            }
-        }
-        MainScope().async {
-            deferredTikiSdk.await()
-            try{
-                title = TikiSdk.trail.title.get(userId).await()
-            } catch (ex: Exception) {
-                onException(ex)
-            }
+            MainScope().async {
+                val deferredTikiSdk =
+                    TikiSdk.initialize(userId, configuration!!.tikiPublishingID, context)
+                deferredTikiSdk.await()
 
-            if (title == null) {
                 try {
-                    title =
-                        TikiSdk.trail.title.create(userId, listOf(Tag(TagCommon.PURCHASE_HISTORY)))
-                            .await()
+                    title = TikiSdk.trail.title.get(userId).await()
                 } catch (ex: Exception) {
                     onException(ex)
                 }
-            }
 
-            TikiSdk.trail.license.create(
-                title!!.id,
-                listOf(
-                    Use(
-                        listOf(Usecase(UsecaseCommon.ANALYTICS)),
-                        listOf("*")
-                    ),
-                ),
-                configuration.terms
-            )
+                if (title == null) {
+                    try {
+                        title = TikiSdk.trail.title.create(
+                            userId,
+                            listOf(Tag(TagCommon.PURCHASE_HISTORY))
+                        ).await()
+                    } catch (ex: Exception) {
+                        onException(ex)
+                    }
+                }
+
+                TikiSdk.trail.license.create(
+                    title!!.id,
+                    listOf(Use(listOf(Usecase(UsecaseCommon.ANALYTICS)), listOf("*"))),
+                    configuration!!.terms
+                )
+            }
+        } else {
+           throw Exception(message = "Please pass the configuration object through CaptureReceipt.config() before initialize the SDK")
         }
     }
 

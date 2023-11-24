@@ -47,7 +47,7 @@ class Retailer {
         context: Context,
         licenseKey: String,
         productKey: String,
-        onError: (error: Exception?) -> Unit,
+        onError: (error: Exception) -> Unit,
     ): CompletableDeferred<Unit> {
         val isLinkInitialized = CompletableDeferred<Unit>()
         BlinkReceiptLinkingSdk.licenseKey = licenseKey

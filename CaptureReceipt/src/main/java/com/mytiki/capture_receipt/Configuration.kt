@@ -1,4 +1,4 @@
-package com.mytiki.capture_receipt.config
+package com.mytiki.capture_receipt
 
 data class Configuration(
     val tikiPublishingID: String,

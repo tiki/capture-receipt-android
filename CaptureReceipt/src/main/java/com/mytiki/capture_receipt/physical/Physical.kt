@@ -35,7 +35,7 @@ class Physical {
         context: Context,
         licenseKey: String,
         productKey: String,
-        onError: (error: Exception) -> Unit,
+        onError: (error: Throwable) -> Unit,
     ): CompletableDeferred<Unit> {
         val isInitialized = CompletableDeferred<Unit>()
         BlinkReceiptSdk.productIntelligenceKey(productKey)
@@ -48,7 +48,7 @@ class Physical {
                 }
 
                 override fun onException(ex: Throwable) {
-                    onError(ex as Exception)
+                    onError(ex)
                 }
             }
         )

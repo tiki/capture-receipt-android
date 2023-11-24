@@ -16,3 +16,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Capture Receipt"
 include(":CaptureReceipt")
+include(":CaptureReceipt:example")
+ 
