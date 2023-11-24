@@ -5,23 +5,17 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.ActivityResult
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat.startActivityForResult
 import com.microblink.BlinkReceiptSdk
 import com.microblink.FrameCharacteristics
-import com.microblink.Media
 import com.microblink.ScanOptions
 import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.InitializeCallback
-import com.microblink.core.ScanResults
 import kotlinx.coroutines.CompletableDeferred
 
 
@@ -70,7 +64,7 @@ class Physical {
      * @param reqPermissionsCallback Callback to request camera permissions if needed.
      */
     @RequiresApi(Build.VERSION_CODES.M)
-    fun scan(context: Context, permissionsCallback: () -> Unit ) {
+    fun scan(context: Context, permissionsCallback: () -> Unit) {
 //        if (context.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
 //            permissionsCallback()
 //        } else {

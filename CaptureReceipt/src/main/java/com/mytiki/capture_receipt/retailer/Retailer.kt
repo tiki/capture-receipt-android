@@ -313,7 +313,6 @@ class Retailer {
     }
 
 
-
     /**
      * Verifies a user account.
      *

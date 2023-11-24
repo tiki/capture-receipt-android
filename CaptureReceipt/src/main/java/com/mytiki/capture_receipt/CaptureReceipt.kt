@@ -7,23 +7,20 @@ package com.mytiki.capture_receipt
 
 import android.content.Context
 import com.mytiki.capture_receipt.account.Account
+import com.mytiki.capture_receipt.account.AccountCommon
 import com.mytiki.capture_receipt.config.Configuration
 import com.mytiki.capture_receipt.receipt.Receipt
-import com.mytiki.capture_receipt.account.AccountCommon
 import com.mytiki.capture_receipt.retailer.Retailer
 import com.mytiki.sdk.capture.receipt.capacitor.Physical
 import com.mytiki.sdk.capture.receipt.capacitor.email.Email
 import com.mytiki.tiki_sdk_android.TikiSdk
-import com.mytiki.tiki_sdk_android.channel.Channel
 import com.mytiki.tiki_sdk_android.trail.License
 import com.mytiki.tiki_sdk_android.trail.Tag
 import com.mytiki.tiki_sdk_android.trail.TagCommon
-import com.mytiki.tiki_sdk_android.trail.Title
 import com.mytiki.tiki_sdk_android.trail.TitleRecord
 import com.mytiki.tiki_sdk_android.trail.Use
 import com.mytiki.tiki_sdk_android.trail.Usecase
 import com.mytiki.tiki_sdk_android.trail.UsecaseCommon
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -34,11 +31,16 @@ import kotlinx.coroutines.awaitAll
  */
 object CaptureReceipt {
     lateinit var configuration: Configuration
-    val license: License? = null
-    val userId: String? = null
+
+    var license: License? = null
+    var userId: String? = null
     var title: TitleRecord? = null
 
-    fun config(config: Configuration){
+//    physical
+//    email
+//    retailer
+
+    fun config(config: Configuration) {
         configuration = config
     }
 
@@ -51,42 +53,56 @@ object CaptureReceipt {
     fun initialize(userId: String, context: Context, onException: (Exception) -> Unit) {
         val deferredTikiSdk = TikiSdk.initialize(userId, configuration.tikiPublishingID, context)
 
-        val deferredEmail = Email().initialize(context, configuration.microblinkLicenseKey, configuration.productIntelligenceKey) {
+        val deferredEmail = Email().initialize(
+            context,
+            configuration.microblinkLicenseKey,
+            configuration.productIntelligenceKey
+        ) {
             if (it != null) {
                 onException(it)
             }
         }
-        val deferredRetailer = Retailer().initialize(context, configuration.microblinkLicenseKey, configuration.productIntelligenceKey) {
+        val deferredRetailer = Retailer().initialize(
+            context,
+            configuration.microblinkLicenseKey,
+            configuration.productIntelligenceKey
+        ) {
             if (it != null) {
                 onException(it)
             }
         }
-        val deferredPhysical = Physical().initialize(context, configuration.microblinkLicenseKey, configuration.productIntelligenceKey) {
+        Physical().initialize(
+            context,
+            configuration.microblinkLicenseKey,
+            configuration.productIntelligenceKey
+        ) {
             if (it != null) {
                 onException(it)
             }
         }
         MainScope().async {
-
-            title = try{
-                TikiSdk.trail.title.get(userId).await()
-            } catch (ex: Exception){
-                null
+            deferredTikiSdk.await()
+            try{
+                title = TikiSdk.trail.title.get(userId).await()
+            } catch (ex: Exception) {
+                onException(ex)
             }
 
-            if(title == null){
-                try{
-                    title = TikiSdk.trail.title.create(userId, listOf(Tag(TagCommon.PURCHASE_HISTORY))).await()
-                } catch (_: Exception){}
+            if (title == null) {
+                try {
+                    title =
+                        TikiSdk.trail.title.create(userId, listOf(Tag(TagCommon.PURCHASE_HISTORY)))
+                            .await()
+                } catch (ex: Exception) {
+                    onException(ex)
+                }
             }
 
-
-            awaitAll(deferredTikiSdk, deferredEmail, deferredRetailer, deferredPhysical)
             TikiSdk.trail.license.create(
-                TikiSdk.trail.title.get(userId).toString(),
+                title!!.id,
                 listOf(
                     Use(
-                        listOf( Usecase(UsecaseCommon.ANALYTICS)),
+                        listOf(Usecase(UsecaseCommon.ANALYTICS)),
                         listOf("*")
                     ),
                 ),
@@ -114,7 +130,8 @@ object CaptureReceipt {
         onReceipt: (Receipt) -> Void,
         onError: (Exception) -> Unit,
         onComplete: () -> Void
-    ) {}
+    ) {
+    }
 
 
     /**
@@ -134,7 +151,8 @@ object CaptureReceipt {
         accountType: AccountCommon,
         onSuccess: (Account) -> Void,
         onError: (Exception) -> Unit
-    ) {}
+    ) {
+    }
 
     /**
      * Retrieve a list of connected accounts.
@@ -158,7 +176,8 @@ object CaptureReceipt {
         username: String,
         onSuccess: () -> Void,
         onError: (Exception) -> Unit
-    ) {}
+    ) {
+    }
 
     /**
      * Retrieve digital receipt data for a specific account type.
@@ -182,7 +201,8 @@ object CaptureReceipt {
         onReceipt: (Receipt) -> Void,
         onError: (Exception) -> Unit,
         onComplete: () -> Void
-    ){}
+    ) {
+    }
 
 
     /**
@@ -205,7 +225,8 @@ object CaptureReceipt {
         onReceipt: (Receipt) -> Void,
         onError: (Exception) -> Unit,
         onComplete: () -> Void
-    ){}
+    ) {
+    }
 
 
     /**
@@ -228,6 +249,7 @@ object CaptureReceipt {
         onReceipt: (Receipt) -> Void,
         onError: (Exception) -> Unit,
         onComplete: () -> Void
-    ){}
+    ) {
+    }
 
 }

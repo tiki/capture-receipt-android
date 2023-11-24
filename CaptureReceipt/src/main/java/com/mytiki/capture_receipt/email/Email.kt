@@ -20,8 +20,8 @@ import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.capture_receipt.account.Account
-import com.mytiki.capture_receipt.email.deleteImapScanTime
 import com.mytiki.capture_receipt.account.AccountCommon
+import com.mytiki.capture_receipt.email.deleteImapScanTime
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -36,6 +36,7 @@ typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
  */
 class Email {
     private val tag = "ProviderSetupDialogFragment"
+
     /**
      * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient].
      *
@@ -103,6 +104,7 @@ class Email {
                     )
                     onComplete?.invoke(account)
                 }
+
                 else -> {
                     onError?.invoke(results.toString())
                 }
@@ -143,28 +145,28 @@ class Email {
 //            }
             client(context, onError) { client ->
                 client.accounts().addOnSuccessListener { credentials ->
-                   if (credentials.isNullOrEmpty()) {
-                       onComplete()
-                   }else{
-                       client.dayCutoff(dayCutOff)
+                    if (credentials.isNullOrEmpty()) {
+                        onComplete()
+                    } else {
+                        client.dayCutoff(dayCutOff)
 
-                       client.messages(object : MessagesCallback {
+                        client.messages(object : MessagesCallback {
 
-                           @SuppressLint("SetTextI18n")
-                           override fun onComplete(
-                               credential: PasswordCredentials,
-                               result: List<ScanResults>
-                           ) {
-                               Timberland.d("credentials $credential results $result")
+                            @SuppressLint("SetTextI18n")
+                            override fun onComplete(
+                                credential: PasswordCredentials,
+                                result: List<ScanResults>
+                            ) {
+                                Timberland.d("credentials $credential results $result")
 
-                           }
+                            }
 
-                           @SuppressLint("SetTextI18n")
-                           override fun onException(throwable: Throwable) {
-                               Timberland.e(throwable)
+                            @SuppressLint("SetTextI18n")
+                            override fun onException(throwable: Throwable) {
+                                Timberland.e(throwable)
 
-                           }
-                       })
+                            }
+                        })
 
 
 //                       client.messages(object : MessagesCallback {
@@ -185,7 +187,7 @@ class Email {
 //                               client.close()
 //                           }
 //                       })
-                   }
+                    }
                 }.addOnFailureListener {
                     onComplete()
                 }
@@ -304,6 +306,7 @@ class Email {
                 override fun onComplete() {
                     clientInitialization.complete(Unit)
                 }
+
                 override fun onException(ex: Throwable) {
                     onError(ex.message ?: "Error in IMAP client initialization: $ex")
                 }
