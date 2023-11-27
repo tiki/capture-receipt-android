@@ -21,7 +21,6 @@ import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.capture_receipt.account.Account
 import com.mytiki.capture_receipt.account.AccountCommon
-import com.mytiki.capture_receipt.email.deleteImapScanTime
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -261,7 +260,7 @@ class Email {
                     ).value
                 }
                 client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
-                context.deleteImapScanTime()
+                //context.deleteImapScanTime()
                 client.logout(passwordCredentials).addOnSuccessListener {
                     onRemove()
                 }.addOnFailureListener {
@@ -285,7 +284,7 @@ class Email {
     fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
             client.clearLastCheckedTime()
-            context.deleteImapScanTime()
+            //context.deleteImapScanTime()
             client.logout().addOnSuccessListener {
                 onComplete()
             }.addOnFailureListener {

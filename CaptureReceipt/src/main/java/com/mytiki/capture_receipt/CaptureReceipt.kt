@@ -97,7 +97,7 @@ object CaptureReceipt {
                 )
             }
         } else {
-           throw Exception(message = "Please pass the configuration object through CaptureReceipt.config() before initialize the SDK")
+           throw Exception("Please pass the configuration object through CaptureReceipt.config() before initialize the SDK")
         }
     }
 
