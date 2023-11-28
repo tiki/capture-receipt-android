@@ -18,7 +18,7 @@ plugins {
 
 android {
     namespace = "com.mytiki.capture_receipt"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -42,6 +42,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    packagingOptions {
+        resources {
+            excludes += listOf("META-INF/LICENSE-notice.md", "META-INF/LICENSE.md", "META-INF/NOTICE.md")
+        }
     }
 }
 

@@ -34,8 +34,11 @@ typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
  *
  * @constructor Creates an empty Email.
  */
-class Email {
+class Email(
+) {
     private val tag = "ProviderSetupDialogFragment"
+    private var googleAPIKey: String? = null
+    private var outlookAPIKey: String? = null
 
     /**
      * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient].
@@ -50,8 +53,12 @@ class Email {
         context: Context,
         licenseKey: String,
         productKey: String,
+        googleKey: String? = null,
+        outlookKey: String? = null,
         onError: (error: Exception) -> Unit,
     ): CompletableDeferred<Unit> {
+        googleAPIKey = googleKey
+        outlookAPIKey = outlookKey
         val isInitialized = CompletableDeferred<Unit>()
         BlinkReceiptDigitalSdk.productIntelligenceKey(productKey)
         BlinkReceiptDigitalSdk.initialize(

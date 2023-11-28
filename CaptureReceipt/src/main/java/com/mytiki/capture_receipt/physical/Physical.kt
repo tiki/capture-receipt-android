@@ -5,17 +5,25 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.ActivityResult
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.app.ActivityOptionsCompat
 import com.microblink.BlinkReceiptSdk
 import com.microblink.FrameCharacteristics
+import com.microblink.Media
 import com.microblink.ScanOptions
 import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.InitializeCallback
+import com.microblink.core.ScanResults
 import kotlinx.coroutines.CompletableDeferred
 
 
@@ -64,13 +72,13 @@ class Physical {
      * @param reqPermissionsCallback Callback to request camera permissions if needed.
      */
     @RequiresApi(Build.VERSION_CODES.M)
-    fun scan(context: Context, permissionsCallback: () -> Unit) {
-//        if (context.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-//            permissionsCallback()
-//        } else {
-//            val intent: Intent = open(context)
-//            startActivityForResult( intent, SCAN_RECEIPT_REQUEST );
-//        }
+    fun scan(activity: AppCompatActivity, permissionsCallback: () -> Unit) {
+        if (activity.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            permissionsCallback()
+        } else {
+            val intent: Intent = open(activity)
+            startActivityForResult(activity, intent, 420,  ActivityOptionsCompat.makeBasic().toBundle());
+        }
     }
 
     /**
@@ -110,15 +118,15 @@ class Physical {
      * If the scanning operation fails (resultCode != Activity.RESULT_OK), it rejects the plugin call with an error message.
      */
     fun onResult(result: ActivityResult) {
-//        if (result.resultCode == Activity.RESULT_OK) {
-//            val scanResults: ScanResults? =
-//                result.data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
-//            val media: Media? = result.data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
+        if (result.resultCode == Activity.RESULT_OK) {
+            val scanResults: ScanResults? =
+                result.data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
+            val media: Media? = result.data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
 //            val rsp = RspScan(scanResults, null, false)
 //            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-//        } else {
+        } else {
 //            call.reject("Physical failed.")
-//        }
+        }
     }
 
 }

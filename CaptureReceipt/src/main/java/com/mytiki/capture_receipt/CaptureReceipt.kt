@@ -6,6 +6,10 @@
 package com.mytiki.capture_receipt
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.mytiki.capture_receipt.account.Account
 import com.mytiki.capture_receipt.account.AccountCommon
 import com.mytiki.capture_receipt.receipt.Receipt
@@ -23,7 +27,7 @@ import com.mytiki.tiki_sdk_android.trail.UsecaseCommon
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 
-
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "tiki-capture-receipt")
 /**
  * The CaptureReceipt object provides methods to interact with the TIKI Capture Receipt SDK.
  */
@@ -52,10 +56,13 @@ object CaptureReceipt {
      */
     fun initialize(userId: String, context: Context, onException: (Throwable) -> Unit) {
         if (configuration != null) {
+
             email.initialize(
                 context,
                 configuration!!.microblinkLicenseKey,
-                configuration!!.productIntelligenceKey
+                configuration!!.productIntelligenceKey,
+                configuration!!.gmailAPIKey,
+                configuration!!.outlookAPIKey,
             ) { onException(it) }
             retailer.initialize(
                 context,
@@ -97,7 +104,7 @@ object CaptureReceipt {
                 )
             }
         } else {
-           throw Exception(message = "Please pass the configuration object through CaptureReceipt.config() before initialize the SDK")
+           throw Exception("Please pass the configuration object through CaptureReceipt.config() before initialize the SDK")
         }
     }
 
@@ -116,11 +123,13 @@ object CaptureReceipt {
      * @see Error An example of an Error object.
      */
     fun scan(
-        context: Context,
+        activity: AppCompatActivity,
         onReceipt: (Receipt) -> Void,
         onError: (Exception) -> Unit,
         onComplete: () -> Void
     ) {
+        activity
+
     }
 
 

@@ -3,7 +3,7 @@ package com.mytiki.capture_receipt.email
 import android.content.Context
 import androidx.datastore.preferences.core.*
 import com.microblink.core.Timberland
-import com.mytiki.sdk.capture.receipt.capacitor.plugin.dataStore
+import com.mytiki.capture_receipt.dataStore
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
