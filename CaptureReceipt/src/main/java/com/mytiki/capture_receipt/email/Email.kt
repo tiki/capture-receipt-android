@@ -36,7 +36,7 @@ typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 class Email {
     private val tag = "ProviderSetupDialogFragment"
 
-    /**
+   /**
      * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient].
      *
      * @param context The application context.

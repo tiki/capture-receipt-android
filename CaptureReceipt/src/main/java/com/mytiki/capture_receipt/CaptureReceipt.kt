@@ -28,20 +28,31 @@ import kotlinx.coroutines.async
  * The CaptureReceipt object provides methods to interact with the TIKI Capture Receipt SDK.
  */
 object CaptureReceipt {
-    var configuration: Configuration? = null
+    private var configuration: Configuration? = null
 
-    var license: License? = null
-    var userId: String? = null
-    var title: TitleRecord? = null
+    private var license: License? = null
+    private var userId: String? = null
+    private var title: TitleRecord? = null
 
-    val email: Email = Email()
-    val retailer: Retailer = Retailer()
-    val physical: Physical = Physical()
+    private val email: Email = Email()
+    private val retailer: Retailer = Retailer()
+    private val physical: Physical = Physical()
 
 
 
-    fun config(config: Configuration) {
-        configuration = config
+    fun config(config: Configuration, onError: (Throwable) -> Unit) {
+        if (config.tikiPublishingID.isNotBlank()){
+            onError(Exception("tikiPublishingID cannot be blank"))
+        } else if (config.microblinkLicenseKey.isNotBlank()) {
+            onError(Exception("microblinkLicenseKey cannot be blank"))
+        } else if (config.productIntelligenceKey.isNotBlank()) {
+            onError(Exception("productIntelligenceKey cannot be blank"))
+        } else if (config.terms.isNotBlank()) {
+            onError(Exception("terms cannot be blank"))
+        } else {
+            configuration = config
+        }
+
     }
 
     /**
@@ -97,7 +108,7 @@ object CaptureReceipt {
                 )
             }
         } else {
-           throw Exception("Please pass the configuration object through CaptureReceipt.config() before initialize the SDK")
+            onException (Exception("Please pass the configuration object through CaptureReceipt.config() before initialize the SDK"))
         }
     }
 

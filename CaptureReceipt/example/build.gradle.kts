@@ -33,6 +33,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    tasks.register<Wrapper>("wrapper") {
+        gradleVersion = "8.12"
+    }
+    tasks.register("prepareKotlinBuildScriptModel") {}
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
