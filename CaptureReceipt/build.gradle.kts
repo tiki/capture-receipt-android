@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 buildscript {
 
     repositories {
@@ -43,6 +45,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{NOTICE,LICENSE,DEPENDENCIES,LICENSE.md,NOTICE.txt,NOTICE.md}"
+        }
     }
 
     publishing {
@@ -94,13 +102,3 @@ dependencies {
     implementation("com.microblink.blinkreceipt:blinkreceipt-digital")
     implementation("com.microblink.blinkreceipt:blinkreceipt-recognizer")
 }
-
-publishing {
-        repositories {
-            maven {
-                name = "localRepo"
-                url = uri(layout.buildDirectory.dir("repo"))
-            }
-        }
-    }
-

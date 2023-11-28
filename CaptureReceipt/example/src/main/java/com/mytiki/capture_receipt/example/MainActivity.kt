@@ -16,10 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mytiki.capture_receipt.example.ui.theme.CaptureReceiptTheme
+import com.mytiki.capture_receipt.CaptureReceipt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CaptureReceipt.configuration
         setContent {
             CaptureReceiptTheme {
                 Surface(
