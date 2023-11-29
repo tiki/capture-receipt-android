@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.Packaging
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 buildscript {
 
@@ -17,17 +18,24 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("maven-publish")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.mytiki.capture_receipt"
     compileSdk = 34
 
+    buildFeatures {
+        dataBinding = true
+    }
+
     defaultConfig {
         minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+
     }
 
     buildTypes {
@@ -74,7 +82,7 @@ dependencies {
     val androidxWorkVersion = if (project.hasProperty("androidxWorkVersion")) rootProject.ext["androidxWorkVersion"] as String else "2.8.1"
     val sunMailVersion = if (project.hasProperty("sunMailVersion")) rootProject.ext["sunMailVersion"] as String else "1.6.7"
     val retrofitVersion = if (project.hasProperty("retrofitVersion")) rootProject.ext["retrofitVersion"] as String else "2.9.0"
-
+    
     implementation("com.mytiki:tiki-sdk-android:2.2.1")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

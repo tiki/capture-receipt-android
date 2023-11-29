@@ -6,6 +6,8 @@
 package com.mytiki.capture_receipt
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -133,14 +135,12 @@ object CaptureReceipt {
      * @see Receipt An example of a Receipt object.
      * @see Error An example of an Error object.
      */
+    @RequiresApi(Build.VERSION_CODES.M)
     fun scan(
         activity: AppCompatActivity,
-        onReceipt: (Receipt) -> Void,
-        onError: (Exception) -> Unit,
-        onComplete: () -> Void
+        permissionsCallback: () -> Unit
     ) {
-        activity
-
+        physical.scan(activity){permissionsCallback()}
     }
 
 

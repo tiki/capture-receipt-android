@@ -20,10 +20,12 @@ import androidx.core.app.ActivityOptionsCompat
 import com.microblink.BlinkReceiptSdk
 import com.microblink.FrameCharacteristics
 import com.microblink.Media
+import com.microblink.Receipt
 import com.microblink.ScanOptions
 import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
+import com.mytiki.capture_receipt.R
 import kotlinx.coroutines.CompletableDeferred
 
 
@@ -76,33 +78,10 @@ class Physical {
         if (activity.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
             permissionsCallback()
         } else {
-            val intent: Intent = open(activity)
-            startActivityForResult(activity, intent, 420,  ActivityOptionsCompat.makeBasic().toBundle());
+            activity.setContentView(R.layout.physical_activity)
         }
     }
 
-    /**
-     * Creates an intent to open the camera for receipt scanning.
-     *
-     * @param context The Android application context.
-     * @return An [Intent] for opening the camera scanner activity.
-     */
-    fun open(context: Context): Intent {
-        val scanOptions = ScanOptions.newBuilder()
-            .detectDuplicates(true)
-            .frameCharacteristics(
-                FrameCharacteristics.newBuilder()
-                    .storeFrames(true)
-                    .compressionQuality(100)
-                    .externalStorage(false).build()
-            )
-            .logoDetection(true)
-            .build()
-        val bundle = Bundle()
-        bundle.putParcelable(CameraScanActivity.SCAN_OPTIONS_EXTRA, scanOptions)
-        return Intent(context, CameraScanActivity::class.java)
-            .putExtra(CameraScanActivity.BUNDLE_EXTRA, bundle)
-    }
 
     /**
      * Handles the scanning result and appropriately resolves or rejects the plugin call based on the outcome.
@@ -117,16 +96,8 @@ class Physical {
      *
      * If the scanning operation fails (resultCode != Activity.RESULT_OK), it rejects the plugin call with an error message.
      */
-    fun onResult(result: ActivityResult) {
-        if (result.resultCode == Activity.RESULT_OK) {
-            val scanResults: ScanResults? =
-                result.data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
-            val media: Media? = result.data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
-//            val rsp = RspScan(scanResults, null, false)
-//            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-        } else {
-//            call.reject("Physical failed.")
-        }
+    fun onResult(results: ScanResults) {
+
     }
 
 }

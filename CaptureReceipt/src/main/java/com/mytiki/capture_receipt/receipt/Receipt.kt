@@ -2,7 +2,7 @@ package com.mytiki.capture_receipt.receipt
 
 import java.util.Date
 
-data class Receipt(
+class Receipt(
     val receiptDate: StringType?,
     val receiptTime: StringType?,
     val retailerId: Int,
