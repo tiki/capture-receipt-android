@@ -10,22 +10,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.*
 import android.os.Build
-import android.os.Bundle
-import androidx.activity.result.ActivityResult
+import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.app.ActivityOptionsCompat
 import com.microblink.BlinkReceiptSdk
-import com.microblink.FrameCharacteristics
-import com.microblink.Media
-import com.microblink.Receipt
-import com.microblink.ScanOptions
-import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
-import com.mytiki.capture_receipt.R
+import com.mytiki.sdk.capture.receipt.capacitor.physical.PhysicalActivity
 import kotlinx.coroutines.CompletableDeferred
 
 
@@ -74,30 +66,14 @@ class Physical {
      * @param reqPermissionsCallback Callback to request camera permissions if needed.
      */
     @RequiresApi(Build.VERSION_CODES.M)
-    fun scan(activity: AppCompatActivity, permissionsCallback: () -> Unit) {
-        if (activity.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-            permissionsCallback()
+    fun scan(activity: Activity, permissionsCallback: () -> Unit) {
+        if (activity.checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_DENIED) {
+            val requestPermissionCode = 98734763
+            activity.requestPermissions(listOf(Manifest.permission.CAMERA).toTypedArray(), requestPermissionCode)
         } else {
-            activity.setContentView(R.layout.physical_activity)
+            activity.startActivity(Intent(activity, PhysicalActivity::class.java))
         }
     }
 
-
-    /**
-     * Handles the scanning result and appropriately resolves or rejects the plugin call based on the outcome.
-     *
-     * This method is responsible for processing the scanning result and responding to the plugin call accordingly.
-     *
-     * @param call The plugin call associated with the scanning operation.
-     * @param result The result of the scanning activity, typically obtained from an activity result callback.
-     *
-     * If the scanning operation is successful (resultCode == Activity.RESULT_OK), it extracts scan results and media data
-     * from the result and resolves the plugin call with a JSON representation of the scan results.
-     *
-     * If the scanning operation fails (resultCode != Activity.RESULT_OK), it rejects the plugin call with an error message.
-     */
-    fun onResult(results: ScanResults) {
-
-    }
 
 }

@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -135,7 +136,7 @@ object CaptureReceipt {
      */
     @RequiresApi(Build.VERSION_CODES.M)
     fun scan(
-        activity: AppCompatActivity,
+        activity: Activity,
         permissionsCallback: () -> Unit
     ) {
         physical.scan(activity){permissionsCallback()}

@@ -1,8 +1,11 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,14 +16,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mytiki.capture_receipt.example.Input
@@ -28,87 +29,78 @@ import com.mytiki.sdk.capture.receipt.capacitor.ui.theme.CaptureReceiptTheme
 import java.util.UUID
 
 class MainActivity : ComponentActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CaptureReceiptTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+            var output by remember{
+                mutableStateOf("")
+            }
+
+            var username by remember{
+                mutableStateOf("")
+            }
+            var password by remember {
+                mutableStateOf("")
+            }
+
+            fun onError(error: Throwable){
+                error.message?.let { output = it }
+            }
+
+
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Content()
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Text(
+                        text = "Tiki Example",
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Text(
+                        text = output,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Justify
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    MainButton(text = "define Configuration") {
+                        output = ""
+                        CaptureReceipt.config(config){onError(it)}
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    MainButton(text = "Initialize") {
+                        output = ""
+                        CaptureReceipt.initialize(UUID.randomUUID().toString(),this@MainActivity){onError(it)}
+                    }
+                    Spacer(modifier = Modifier.height( 20.dp))
+                    MainButton(text = "Scan Physical") {
+                        CaptureReceipt.scan(this@MainActivity){}
+                    }
+
+                    Spacer(modifier = Modifier.height( 30.dp))
+                    Input(tile = "Email", text = username, isShow = true, onChange = {username = it})
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Input(tile = "Password", text = password, isShow = false, onChange = {password = it})
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    MainButton(text = "Scan Email") {
+
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    MainButton(text = "Scan Retailer") {
+
+                    }
                 }
             }
-        }
-    }
-}
-
-
-@Composable
-fun Content() {
-
-
-    val context = LocalContext.current
-    var output by remember{
-        mutableStateOf("")
-    }
-
-    var username by remember{
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
-
-    fun onError(error: Throwable){
-        error.message?.let { output = it }
-
-    }
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(40.dp))
-        Text(
-            text = "Tiki Example",
-        )
-        Spacer(modifier = Modifier.height(15.dp))
-        Text(
-            text = output,
-            color = MaterialTheme.colorScheme.error,
-            textAlign = TextAlign.Justify
-        )
-        Spacer(modifier = Modifier.height(30.dp))
-        MainButton(text = "define Configuration") {
-            output = ""
-            CaptureReceipt.config(config){onError(it)}
-        }
-        Spacer(modifier = Modifier.height(15.dp))
-        MainButton(text = "Initialize") {
-            output = ""
-            CaptureReceipt.initialize(UUID.randomUUID().toString(),context){onError(it)}
-        }
-        Spacer(modifier = Modifier.height( 30.dp))
-
-        Input(tile = "Email", text = username, isShow = true, onChange = {username = it})
-        Spacer(modifier = Modifier.height(20.dp))
-        Input(tile = "Password", text = password, isShow = false, onChange = {password = it})
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        MainButton(text = "Scan Email") {
-
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        MainButton(text = "Scan Retailer") {
-
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        MainButton(text = "Scan Physical") {
-
         }
     }
 }

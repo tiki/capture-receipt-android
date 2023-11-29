@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.microblink.FrameCharacteristics
 import com.microblink.Media
@@ -17,8 +18,8 @@ class PhysicalActivity: AppCompatActivity() {
 
     private var _binding: PhysicalActivityBinding? = null
     private val binding get() = _binding!!
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         _binding = PhysicalActivityBinding.inflate(layoutInflater)
         val scanOptions = ScanOptions.newBuilder()
             .frameCharacteristics(
@@ -31,13 +32,11 @@ class PhysicalActivity: AppCompatActivity() {
             .build()
 
         val bundle = Bundle()
-
         bundle.putParcelable(CameraScanActivity.SCAN_OPTIONS_EXTRA, scanOptions)
 
         val intent = Intent(this, CameraScanActivity::class.java)
             .putExtra(CameraScanActivity.BUNDLE_EXTRA, bundle)
-
-        startActivityForResult(intent, SCAN_RECEIPT_REQUEST)
+        this.startActivityForResult(intent, SCAN_RECEIPT_REQUEST)
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith(
@@ -49,7 +48,7 @@ class PhysicalActivity: AppCompatActivity() {
         if (requestCode == SCAN_RECEIPT_REQUEST && resultCode == Activity.RESULT_OK) {
             val scanResults: ScanResults? = data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
             val media: Media? = data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
-        } else {}
+        }
         this@PhysicalActivity.finish()
     }
 }
