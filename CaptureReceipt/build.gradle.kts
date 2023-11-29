@@ -20,7 +20,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mytiki.capture_receipt"
+    namespace = "com.mytiki.sdk.capture.receipt.capacitor"
     compileSdk = 34
 
     defaultConfig {

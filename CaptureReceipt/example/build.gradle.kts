@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.mytiki.capture_receipt.example"
+    namespace = "com.mytiki.sdk.capture.receipt.capacitor"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.mytiki.capture_receipt.example"
+        applicationId = "com.mytiki.sdk.capture.receipt.capacitor"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
