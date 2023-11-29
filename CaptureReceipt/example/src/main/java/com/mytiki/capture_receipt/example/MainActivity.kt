@@ -49,11 +49,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun Content() {
     val context = LocalContext.current
-    var error by remember{
+    var output by remember{
         mutableStateOf("")
+    }
+    fun onError(error: Throwable){
+        error.message?.let { output = it }
     }
 
     Column(
@@ -68,24 +72,30 @@ fun Content() {
         )
         Spacer(modifier = Modifier.height(15.dp))
         Text(
-            text = error,
+            text = output,
             color = MaterialTheme.colorScheme.error,
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(30.dp))
+        MainButton(text = "define Configuration") {
+            output = ""
+            CaptureReceipt.config(config){onError(it)}
+        }
+        Spacer(modifier = Modifier.height(15.dp))
         MainButton(text = "Initialize") {
-            error = ""
-            CaptureReceipt.config(
-                Configuration(
-                    "",
-                    "",
-                    "",
-                    "",
-                )
-            )
-            CaptureReceipt.initialize(UUID.randomUUID().toString(),context){err ->
-                err.message?.let { error = it }
-            }
+            output = ""
+            CaptureReceipt.initialize(UUID.randomUUID().toString(),context){onError(it)}
         }
     }
 }
+
+val config = Configuration(
+    "be19730a-00d5-45f5-b18e-2e19eb25f311",
+    "sRwAAAAaY29tLm15dGlraS5jYXB0dXJlX3JlY2VpcHSeDEgn89JmqIXv8Tgo9grqq1mULx7A5rdsY1r0YRGYYcdmUAiJYYHKt320i9OhagaaQC7Wg0lqJkEEpM2UNMJltQq/Rl7batogVH17XRe+jiqYdLMTd1odHSOyz4uGPy6xsLP3f8f/aHc97yaz5hltFEOOL9R+P8L7vrdRtf6isPeqLmpVww==",
+    "wSNX3mu+YGc/2I1DDd0NmrYHS6zS1BQt2geMUH7DDowER43JGeJRUErOHVwU2tz6xHDXia8BuvXQI3j37I0uYw==",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lobortis risus ac ultrices faucibus. Nullam vel pulvinar neque. Morbi ultrices maximus est, quis blandit urna vestibulum nec. Morbi et finibus nisi. Vestibulum dignissim rutrum mi sit amet sagittis. Aenean id ligula eget enim feugiat luctus vitae vitae orci. Maecenas aliquam semper nunc vel pellentesque. Ut cursus neque non est mattis consequat. Duis posuere odio et tellus aliquam, et tristique erat pharetra. Mauris sollicitudin lorem ligula. Ut lacinia, neque ac ornare gravida, libero turpis fermentum nibh, eget sodales diam magna sit amet lacus. Aliquam pretium suscipit mi eget luctus. Aliquam ut velit ut magna elementum sollicitudin in et magna. Ut a elementum tellus, eu cursus lacus. Pellentesque neque nisi, semper ac mi vel, fringilla semper nisl. Morbi at vulputate lectus, non ornare nulla." +
+            "Vestibulum convallis rutrum tellus sed vulputate. Suspendisse condimentum mauris quis odio aliquet, at posuere augue egestas. Nulla finibus nibh ac placerat pretium. Mauris volutpat urna sit amet vehicula fermentum. Praesent semper est diam, sit amet elementum orci luctus ac. Quisque condimentum ipsum in venenatis rutrum. Donec rutrum nisl id elit porttitor, vel scelerisque quam ultricies. Donec vulputate, mi at tempor hendrerit, risus tortor consequat neque, non laoreet orci ante tempor dolor. Curabitur placerat convallis risus, a facilisis diam mollis in." +
+            "Mauris in ex dolor. Nunc eu mollis mi. Integer ut nulla egestas, finibus tellus in, congue sem. Vestibulum sit amet velit cursus, consequat purus id, porttitor ligula. Aliquam pellentesque non augue quis tincidunt. Duis a pulvinar odio, non ultrices metus. Sed eu risus quam. Nam vehicula ligula id aliquet aliquet. Quisque faucibus odio pulvinar tellus tristique, eget tempus tellus accumsan. Nulla vehicula nunc quis dapibus lobortis. Sed urna magna, commodo vitae enim eget, scelerisque hendrerit mi. Pellentesque lobortis lectus vitae convallis facilisis." +
+            "Phasellus lobortis purus sit amet sodales efficitur. Mauris sapien lorem, pretium id turpis eu, tristique maximus tellus. Donec porttitor, enim ut scelerisque dapibus, lectus tellus laoreet ante, a ornare dolor nisi sed risus. Vestibulum facilisis mollis urna in suscipit. Pellentesque sit amet lobortis nulla. Fusce semper rhoncus urna a gravida. In congue nec nisi eu hendrerit. Donec sed felis elementum lacus posuere porttitor eget quis dolor. Maecenas eu iaculis dolor. Nam venenatis tempor velit vel finibus. Phasellus purus nunc, condimentum sit amet porttitor nec, rhoncus et ante. Fusce tristique nibh quis sem varius ultricies. Maecenas egestas justo sed enim maximus consectetur." +
+            "Phasellus malesuada magna a ex mollis varius. Quisque a vulputate metus. Cras in nibh lorem. Proin in enim efficitur, pellentesque elit sed, dictum turpis. Duis sagittis lectus eu magna imperdiet maximus. Nullam condimentum scelerisque arcu ac auctor. Phasellus malesuada erat quis gravida mollis.",
+)

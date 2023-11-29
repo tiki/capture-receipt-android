@@ -41,13 +41,13 @@ object CaptureReceipt {
 
 
     fun config(config: Configuration, onError: (Throwable) -> Unit) {
-        if (config.tikiPublishingID.isNotBlank()){
+        if (config.tikiPublishingID.isBlank()){
             onError(Exception("tikiPublishingID cannot be blank"))
-        } else if (config.microblinkLicenseKey.isNotBlank()) {
+        } else if (config.microblinkLicenseKey.isBlank()) {
             onError(Exception("microblinkLicenseKey cannot be blank"))
-        } else if (config.productIntelligenceKey.isNotBlank()) {
+        } else if (config.productIntelligenceKey.isBlank()) {
             onError(Exception("productIntelligenceKey cannot be blank"))
-        } else if (config.terms.isNotBlank()) {
+        } else if (config.terms.isBlank()) {
             onError(Exception("terms cannot be blank"))
         } else {
             configuration = config
