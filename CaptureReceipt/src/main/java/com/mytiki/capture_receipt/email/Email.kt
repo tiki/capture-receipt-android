@@ -39,7 +39,7 @@ class Email(
     private var googleAPIKey: String? = null
     private var outlookAPIKey: String? = null
 
-    /**
+   /**
      * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient].
      *
      * @param context The application context.

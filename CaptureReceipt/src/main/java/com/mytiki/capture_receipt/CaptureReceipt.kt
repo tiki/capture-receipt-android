@@ -32,20 +32,31 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ti
  * The CaptureReceipt object provides methods to interact with the TIKI Capture Receipt SDK.
  */
 object CaptureReceipt {
-    var configuration: Configuration? = null
+    private var configuration: Configuration? = null
 
-    var license: License? = null
-    var userId: String? = null
-    var title: TitleRecord? = null
+    private var license: License? = null
+    private var userId: String? = null
+    private var title: TitleRecord? = null
 
-    val email: Email = Email()
-    val retailer: Retailer = Retailer()
-    val physical: Physical = Physical()
+    private val email: Email = Email()
+    private val retailer: Retailer = Retailer()
+    private val physical: Physical = Physical()
 
 
 
-    fun config(config: Configuration) {
-        configuration = config
+    fun config(config: Configuration, onError: (Throwable) -> Unit) {
+        if (config.tikiPublishingID.isBlank()){
+            onError(Exception("tikiPublishingID cannot be blank"))
+        } else if (config.microblinkLicenseKey.isBlank()) {
+            onError(Exception("microblinkLicenseKey cannot be blank"))
+        } else if (config.productIntelligenceKey.isBlank()) {
+            onError(Exception("productIntelligenceKey cannot be blank"))
+        } else if (config.terms.isBlank()) {
+            onError(Exception("terms cannot be blank"))
+        } else {
+            configuration = config
+        }
+
     }
 
     /**
@@ -104,7 +115,7 @@ object CaptureReceipt {
                 )
             }
         } else {
-           throw Exception("Please pass the configuration object through CaptureReceipt.config() before initialize the SDK")
+            onException (Exception("Please pass the configuration object through CaptureReceipt.config() before initialize the SDK"))
         }
     }
 
