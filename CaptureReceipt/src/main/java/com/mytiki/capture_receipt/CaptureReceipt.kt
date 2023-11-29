@@ -167,7 +167,9 @@ object CaptureReceipt {
     ) {
         if (accountType.type == AccountTypeEnum.EMAIL){
             email.login(username, password, accountType.id, activity.supportFragmentManager, {onSuccess(it)}){onError(it)}
-        } else {}
+        } else {
+            retailer.login(username, password, accountType.id, activity, {onSuccess(it)}){onError(it)}
+        }
     }
 
     /**
