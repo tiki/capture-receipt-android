@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.email
+package com.mytiki.capture_receipt.email
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -25,6 +25,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import java.util.Calendar
+import kotlin.math.floor
 
 typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 
@@ -89,7 +90,7 @@ class Email(
     fun login(
         username: String,
         password: String,
-        id: String,
+        accountId: String,
         supportFragmentManager: FragmentManager,
         onComplete: ((Account) -> Unit)? = null,
         onError: ((String) -> Unit)? = null
@@ -97,7 +98,7 @@ class Email(
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
                 PasswordCredentials.newBuilder(
-                    Provider.valueOf(id),
+                    Provider.valueOf(accountId),
                     username,
                     password
                 ).build()
@@ -106,7 +107,7 @@ class Email(
             when (results) {
                 ProviderSetupResults.CREATED_APP_PASSWORD -> {
                     val account = Account(
-                        AccountCommon.fromSource(id), username, password, true
+                        AccountCommon.fromSource(accountId), username, password, true
                     )
                     onComplete?.invoke(account)
                 }
@@ -143,12 +144,12 @@ class Email(
         MainScope().async {
             var dayCutOff = 15
             val now = Calendar.getInstance().timeInMillis
-//            val lastScrape = context.getImapScanTime().await()
-//            val diffInMillis = now - lastScrape
-//            val diffInDays = floor((diffInMillis / 86400000).toDouble()).toInt()
-//            if (diffInDays <= 15) {
-//                dayCutOff = diffInDays
-//            }
+            val lastScrape = context.getImapScanTime().await()
+            val diffInMillis = now - lastScrape
+            val diffInDays = floor((diffInMillis / 86400000).toDouble()).toInt()
+            if (diffInDays <= 15) {
+                dayCutOff = diffInDays
+            }
             client(context, onError) { client ->
                 client.accounts().addOnSuccessListener { credentials ->
                     if (credentials.isNullOrEmpty()) {
@@ -175,24 +176,24 @@ class Email(
                         })
 
 
-//                       client.messages(object : MessagesCallback {
-//                           override fun onComplete(
-//                               credential: PasswordCredentials,
-//                               result: List<ScanResults>
-//                           ) {
-//                               result.forEach { receipt ->
-//                                   onReceipt(receipt)
-//                               }
-//                               context.setImapScanTime(now)
-//                               onComplete()
-//                               client.close()
-//                           }
-//                           override fun onException(throwable: Throwable) {
-//                               onError(throwable.message ?: throwable.toString())
-//                               onComplete()
-//                               client.close()
-//                           }
-//                       })
+                       client.messages(object : MessagesCallback {
+                           override fun onComplete(
+                               credential: PasswordCredentials,
+                               result: List<ScanResults>
+                           ) {
+                               result.forEach { receipt ->
+                                   onReceipt(receipt)
+                               }
+                               context.setImapScanTime(now)
+                               onComplete()
+                               client.close()
+                           }
+                           override fun onException(throwable: Throwable) {
+                               onError(throwable.message ?: throwable.toString())
+                               onComplete()
+                               client.close()
+                           }
+                       })
                     }
                 }.addOnFailureListener {
                     onComplete()

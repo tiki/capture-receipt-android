@@ -12,10 +12,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.mytiki.capture_receipt.account.Account
 import com.mytiki.capture_receipt.account.AccountCommon
+import com.mytiki.capture_receipt.account.AccountTypeEnum
 import com.mytiki.capture_receipt.receipt.Receipt
 import com.mytiki.capture_receipt.retailer.Retailer
 import com.mytiki.sdk.capture.receipt.capacitor.Physical
-import com.mytiki.sdk.capture.receipt.capacitor.email.Email
+import com.mytiki.capture_receipt.email.Email
 import com.mytiki.tiki_sdk_android.TikiSdk
 import com.mytiki.tiki_sdk_android.trail.License
 import com.mytiki.tiki_sdk_android.trail.Tag
@@ -24,8 +25,10 @@ import com.mytiki.tiki_sdk_android.trail.TitleRecord
 import com.mytiki.tiki_sdk_android.trail.Use
 import com.mytiki.tiki_sdk_android.trail.Usecase
 import com.mytiki.tiki_sdk_android.trail.UsecaseCommon
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "tiki-capture-receipt")
 /**
@@ -155,13 +158,16 @@ object CaptureReceipt {
      * @param onError A callback function to execute if there is an error during login.
      */
     fun login(
-        context: Context,
+        activity: AppCompatActivity,
         username: String,
         password: String,
         accountType: AccountCommon,
         onSuccess: (Account) -> Void,
-        onError: (Exception) -> Unit
+        onError: (String) -> Unit
     ) {
+        if (accountType.type == AccountTypeEnum.EMAIL){
+            email.login(username, password, accountType.id, activity.supportFragmentManager, {onSuccess(it)}){onError(it)}
+        } else {}
     }
 
     /**
@@ -169,8 +175,17 @@ object CaptureReceipt {
      *
      * @return A list of connected accounts.
      */
-    fun accounts(): List<Account> {
-        return mutableListOf()
+    fun accounts(context: Context, onError: (msg: String) -> Unit): CompletableDeferred<List<Account>> {
+        val accountsList = mutableListOf<Account>()
+        val accountsDeferred = CompletableDeferred<List<Account>>()
+        val emailDeferred = CompletableDeferred<Unit>()
+        val retailerDeferred = CompletableDeferred<Unit>()
+        MainScope().async {
+            email.accounts(context, { accountsList.add(it) }, { onError(it) }){emailDeferred.complete(Unit)}
+            email.accounts(context, { accountsList.add(it) }, { onError(it) }) {retailerDeferred.complete(Unit)}
+            awaitAll(emailDeferred, retailerDeferred)
+        }.invokeOnCompletion { accountsDeferred.complete(accountsList) }
+        return accountsDeferred
     }
 
     /**
