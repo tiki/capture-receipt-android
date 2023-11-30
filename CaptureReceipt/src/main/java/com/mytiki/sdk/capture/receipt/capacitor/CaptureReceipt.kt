@@ -13,7 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.mytiki.capture_receipt.email.Email
+import androidx.fragment.app.FragmentManager
+import com.mytiki.sdk.capture.receipt.capacitor.email.Email
 
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
@@ -141,9 +142,8 @@ object CaptureReceipt {
     @RequiresApi(Build.VERSION_CODES.M)
     fun scan(
         activity: Activity,
-        permissionsCallback: () -> Unit
     ) {
-        physical.scan(activity){permissionsCallback()}
+        physical.scan(activity)
     }
 
 
@@ -162,7 +162,7 @@ object CaptureReceipt {
         username: String,
         password: String,
         accountType: AccountCommon,
-        onSuccess: (Account) -> Void,
+        onSuccess: (Account) -> Unit,
         onError: (String) -> Unit
     ) {
         if (accountType.type == AccountTypeEnum.EMAIL){
@@ -182,7 +182,7 @@ object CaptureReceipt {
         val retailerDeferred = CompletableDeferred<Unit>()
         MainScope().async {
             email.accounts(context, { accountsList.add(it) }, { onError(it) }){emailDeferred.complete(Unit)}
-            email.accounts(context, { accountsList.add(it) }, { onError(it) }) {retailerDeferred.complete(Unit)}
+            retailer.accounts(context, { accountsList.add(it) }, { onError(it) }) {retailerDeferred.complete(Unit)}
             awaitAll(emailDeferred, retailerDeferred)
         }.invokeOnCompletion { accountsDeferred.complete(accountsList) }
         return accountsDeferred

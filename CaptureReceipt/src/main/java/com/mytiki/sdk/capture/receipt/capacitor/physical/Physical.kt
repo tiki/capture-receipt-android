@@ -66,7 +66,7 @@ class Physical {
      * @param reqPermissionsCallback Callback to request camera permissions if needed.
      */
     @RequiresApi(Build.VERSION_CODES.M)
-    fun scan(activity: Activity, permissionsCallback: () -> Unit) {
+    fun scan(activity: Activity) {
         if (activity.checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_DENIED) {
             val requestPermissionCode = 98734763
             activity.requestPermissions(listOf(Manifest.permission.CAMERA).toTypedArray(), requestPermissionCode)

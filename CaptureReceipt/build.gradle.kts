@@ -1,6 +1,3 @@
-import com.android.build.api.dsl.Packaging
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-
 buildscript {
 
     repositories {
@@ -69,6 +66,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.ui:ui-android:1.5.4")
     val kotlinVersion = if (project.hasProperty("kotlinVersion")) rootProject.ext["kotlinVersion"] as String else "1.8.22"
     val mockkVersion = if (project.hasProperty("mockkVersion")) rootProject.ext["mockkVersion"] as String else "1.13.5"
     val junitVersion = if (project.hasProperty("junitVersion")) rootProject.ext["junitVersion"] as String else "4.13.2"

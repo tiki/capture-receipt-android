@@ -3,10 +3,11 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.capture_receipt.email
+package com.mytiki.sdk.capture.receipt.capacitor.email
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.fragment.app.FragmentManager
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
@@ -19,6 +20,9 @@ import com.microblink.digital.Provider
 import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
+import com.mytiki.capture_receipt.email.EmailEnum
+import com.mytiki.capture_receipt.email.getImapScanTime
+import com.mytiki.capture_receipt.email.setImapScanTime
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import kotlinx.coroutines.CompletableDeferred
@@ -226,6 +230,7 @@ class Email(
                         for (credential in credentials) {
                             val account = Account.fromEmailAccount(credential)
                             account.isVerified = true
+                            Log.d("***********", "${account.username}")
                             onAccount(account)
                             returnedAccounts++
                             if (returnedAccounts == credentials.size) {
