@@ -1,5 +1,3 @@
-import com.android.build.api.dsl.Packaging
-
 buildscript {
 
     repositories {
@@ -17,17 +15,24 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("maven-publish")
+    id("kotlin-kapt")
 }
 
 android {
-    namespace = "com.mytiki.capture_receipt"
+    namespace = "com.mytiki.sdk.capture.receipt.capacitor"
     compileSdk = 34
+
+    buildFeatures {
+        dataBinding = true
+    }
 
     defaultConfig {
         minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+
     }
 
     buildTypes {
@@ -40,11 +45,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     packaging {
@@ -61,6 +66,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.ui:ui-android:1.5.4")
     val kotlinVersion = if (project.hasProperty("kotlinVersion")) rootProject.ext["kotlinVersion"] as String else "1.8.22"
     val mockkVersion = if (project.hasProperty("mockkVersion")) rootProject.ext["mockkVersion"] as String else "1.13.5"
     val junitVersion = if (project.hasProperty("junitVersion")) rootProject.ext["junitVersion"] as String else "4.13.2"
@@ -74,7 +80,7 @@ dependencies {
     val androidxWorkVersion = if (project.hasProperty("androidxWorkVersion")) rootProject.ext["androidxWorkVersion"] as String else "2.8.1"
     val sunMailVersion = if (project.hasProperty("sunMailVersion")) rootProject.ext["sunMailVersion"] as String else "1.6.7"
     val retrofitVersion = if (project.hasProperty("retrofitVersion")) rootProject.ext["retrofitVersion"] as String else "2.9.0"
-
+    
     implementation("com.mytiki:tiki-sdk-android:2.2.1")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
