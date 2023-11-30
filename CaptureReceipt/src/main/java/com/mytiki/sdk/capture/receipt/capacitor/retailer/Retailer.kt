@@ -6,6 +6,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor.retailer
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import com.microblink.linking.PasswordCredentials
 import com.microblink.linking.VERIFICATION_NEEDED
 import com.mytiki.sdk.capture.receipt.capacitor.R
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
+import com.mytiki.sdk.capture.receipt.capacitor.physical.PhysicalActivity
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
@@ -352,17 +354,15 @@ class Retailer {
                     activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
                         (it.parent as ViewGroup).removeView(it)
                     }
-
                     if (exception.code == VERIFICATION_NEEDED && exception.view != null) {
                         exception.view!!.isFocusableInTouchMode = true
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             exception.view!!.focusable = View.FOCUSABLE
                         }
-                        val viewGroup =
-                            (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
+                        activity.startActivity(Intent(activity, RetailerActivity::class.java))
+                        val viewGroup = (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
                         View.inflate(activity, R.layout.webview_container, viewGroup)
-                        val webViewContainer =
-                            activity.findViewById<FrameLayout>(R.id.webview_container)
+                        val webViewContainer = activity.findViewById<FrameLayout>(R.id.webview_container)
                         webViewContainer.addView(exception.view)
                     } else {
                         onError?.let {

@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                             CaptureReceipt.scan(this@MainActivity)
                         }
                         Spacer(modifier = Modifier.height(20.dp))
-                        MainButton(text = "Scan Email") {
+                        MainButton(text = "Login Email") {
                             errorOutput = ""
                             loginOutput = ""
                             accountsOutput = ""
@@ -128,8 +128,18 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
                         Spacer(modifier = Modifier.height(20.dp))
-                        MainButton(text = "Scan Retailer") {
-
+                        MainButton(text = "Login Retailer") {
+                            errorOutput = ""
+                            loginOutput = ""
+                            accountsOutput = ""
+                            CaptureReceipt.login(
+                                this@MainActivity,
+                                username,
+                                password,
+                                AccountCommon.AMAZON,
+                                {loginOutput = it.toString()},
+                                {errorOutput = it}
+                            )
                         }
                         if (loginOutput.isNotBlank()) {
                             Spacer(modifier = Modifier.height(20.dp))

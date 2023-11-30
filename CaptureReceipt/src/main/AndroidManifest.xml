@@ -8,6 +8,11 @@
             android:exported="false"
             android:theme="@style/Theme.AppCompat"
             />
+        <activity
+            android:name=".retailer.RetailerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat"
+            />
     </application>
 
 </manifest>
