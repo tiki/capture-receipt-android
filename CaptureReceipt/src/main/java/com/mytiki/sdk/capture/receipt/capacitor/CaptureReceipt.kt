@@ -202,11 +202,27 @@ object CaptureReceipt {
     fun logout(
         context: Context,
         username: String,
-        onSuccess: () -> Void,
-        onError: (Exception) -> Unit
+        accountCommon: AccountCommon,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
     ) {
+        val account = Account(accountCommon, username)
+        if (accountCommon.type == AccountTypeEnum.EMAIL){
+            email.logout(context, account, onSuccess){onError(it)}
+        } else {
+            retailer.logout(context, account, onSuccess){onError(it)}
+        }
+
     }
 
+    fun logout(
+        context: Context,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        email.flush(context, onSuccess){onError(it)}
+        retailer.flush(context, onSuccess){onError(it)}
+    }
     /**
      * Retrieve digital receipt data for a specific account type.
      *

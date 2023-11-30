@@ -156,6 +156,21 @@ class MainActivity : AppCompatActivity() {
                                 accountsOutput = list.map{it.username to it.accountCommon.name}.toString()
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MainButton(text = "Logout Gmail") {
+                            CaptureReceipt.logout(this@MainActivity, username, AccountCommon.GMAIL, {loginOutput = "worked"}){errorOutput = it}
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MainButton(text = "Logout Amazon") {
+                            CaptureReceipt.logout(this@MainActivity, username, AccountCommon.AMAZON, {loginOutput = "worked"}){errorOutput = it}
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MainButton(text = "Flush") {
+                            CaptureReceipt.logout(this@MainActivity, {loginOutput = "worked"}){errorOutput = it}
+                        }
+
+                        Spacer(modifier = Modifier.height(40.dp))
                     }
                 }
             }

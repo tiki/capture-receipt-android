@@ -21,6 +21,7 @@ import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.capture_receipt.email.EmailEnum
+import com.mytiki.capture_receipt.email.deleteImapScanTime
 import com.mytiki.capture_receipt.email.getImapScanTime
 import com.mytiki.capture_receipt.email.setImapScanTime
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
@@ -272,7 +273,7 @@ class Email(
                     ).value
                 }
                 client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
-                //context.deleteImapScanTime()
+                context.deleteImapScanTime()
                 client.logout(passwordCredentials).addOnSuccessListener {
                     onRemove()
                 }.addOnFailureListener {
