@@ -1,18 +1,12 @@
 package com.mytiki.sdk.capture.receipt.capacitor.retailer
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.microblink.FrameCharacteristics
-import com.microblink.Media
-import com.microblink.ScanOptions
-import com.microblink.camera.ui.CameraScanActivity
-import com.microblink.core.ScanResults
+import com.mytiki.sdk.capture.receipt.capacitor.R
+import com.mytiki.sdk.capture.receipt.capacitor.databinding.PhysicalActivityBinding
 import com.mytiki.sdk.capture.receipt.capacitor.databinding.RetailerActivityBinding
 
-const val SCAN_RECEIPT_REQUEST = 420
 class RetailerActivity: AppCompatActivity() {
 
     private var _binding: RetailerActivityBinding? = null
@@ -20,7 +14,10 @@ class RetailerActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = RetailerActivityBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        val rootView = binding.root
+        setContentView(rootView)
+        val webView = Retailer.webView.value
+        binding.webContainer.removeAllViews()
+        binding.webContainer.addView(webView)
     }
 }

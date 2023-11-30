@@ -137,11 +137,11 @@ class MainActivity : AppCompatActivity() {
                                 username,
                                 password,
                                 AccountCommon.AMAZON,
-                                {loginOutput = it.toString()},
+                                {loginOutput = "${it.username} - ${it.accountCommon.name}"},
                                 {errorOutput = it}
                             )
                         }
-                        if (loginOutput.isNotBlank()) {
+                        if (accountsOutput.isNotBlank()) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Text(
                                 text = accountsOutput,
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                         MainButton(text = "Accounts") {
                             MainScope().async {
                                 val list = CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }.await()
-                                accountsOutput = list.toString()
+                                accountsOutput = list.map{it.username to it.accountCommon.name}.toString()
                             }
                         }
                     }

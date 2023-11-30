@@ -12,6 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
 import com.microblink.core.Timberland
@@ -22,7 +26,6 @@ import com.microblink.linking.PasswordCredentials
 import com.microblink.linking.VERIFICATION_NEEDED
 import com.mytiki.sdk.capture.receipt.capacitor.R
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
-import com.mytiki.sdk.capture.receipt.capacitor.physical.PhysicalActivity
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
@@ -35,6 +38,9 @@ typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
  * This class represents the Retailer functionality for account linking and order retrieval.
  */
 class Retailer {
+    companion object {
+        val webView = mutableStateOf<View?>(null)
+    }
 
     /**
      * Initializes the Retailer SDK.
@@ -335,9 +341,6 @@ class Retailer {
             client.verify(
                 RetailerEnum.fromString(account.accountCommon.id).value,
                 success = { isVerified: Boolean, _: String ->
-                    activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
-                        (it.parent as ViewGroup).removeView(it)
-                    }
                     if (isVerified) {
                         account.isVerified = true
                         onVerify?.invoke(account)
@@ -351,19 +354,13 @@ class Retailer {
                     }
                 },
                 failure = { exception ->
-                    activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
-                        (it.parent as ViewGroup).removeView(it)
-                    }
                     if (exception.code == VERIFICATION_NEEDED && exception.view != null) {
                         exception.view!!.isFocusableInTouchMode = true
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             exception.view!!.focusable = View.FOCUSABLE
                         }
+                        webView.value = exception.view
                         activity.startActivity(Intent(activity, RetailerActivity::class.java))
-                        val viewGroup = (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
-                        View.inflate(activity, R.layout.webview_container, viewGroup)
-                        val webViewContainer = activity.findViewById<FrameLayout>(R.id.webview_container)
-                        webViewContainer.addView(exception.view)
                     } else {
                         onError?.let {
                             it("Account not verified ${account.username} - ${account.accountCommon.id}: ${exception.message} - $exception")

@@ -6,12 +6,12 @@
         <activity
             android:name=".physical.PhysicalActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             />
         <activity
             android:name=".retailer.RetailerActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             />
     </application>
 

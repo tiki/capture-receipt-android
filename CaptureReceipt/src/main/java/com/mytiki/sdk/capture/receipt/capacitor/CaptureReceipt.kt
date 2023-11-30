@@ -183,7 +183,7 @@ object CaptureReceipt {
         val emailDeferred = CompletableDeferred<Unit>()
         val retailerDeferred = CompletableDeferred<Unit>()
         MainScope().async {
-//            email.accounts(context, { accountsList.add(it) }, { onError(it) }){emailDeferred.complete(Unit)}
+            email.accounts(context, { accountsList.add(it) }, { onError(it) }){emailDeferred.complete(Unit)}
             retailer.accounts(context, { accountsList.add(it) }, { onError(it) }) {retailerDeferred.complete(Unit)}
             awaitAll(emailDeferred, retailerDeferred)
             accountsDeferred.complete(accountsList)
