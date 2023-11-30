@@ -1,4 +1,4 @@
-package com.mytiki.sdk.capture.receipt.capacitor.email
+package com.mytiki.capture_receipt.email
 
 import com.microblink.digital.Provider
 

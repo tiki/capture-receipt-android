@@ -1,7 +1,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor.account
 
+import com.mytiki.capture_receipt.email.EmailEnum
 import com.mytiki.sdk.capture.receipt.capacitor.retailer.RetailerEnum
-import com.mytiki.sdk.capture.receipt.capacitor.email.EmailEnum
 
 /**
  * Enum of all account providers.
