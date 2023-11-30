@@ -194,7 +194,6 @@ class Retailer {
         context: Context,
         onReceipt: (ScanResults?) -> Unit,
         onError: (msg: String) -> Unit,
-        daysCutOff: Int = 15,
         onComplete: () -> Unit
     ) {
         this.client(context) { client ->
@@ -211,7 +210,6 @@ class Retailer {
                                 context,
                                 account,
                                 onReceipt,
-                                daysCutOff,
                                 onError,
                             ) {
                                 fetchedAccounts++
@@ -246,11 +244,10 @@ class Retailer {
         context: Context,
         account: Account,
         onScan: (ScanResults?) -> Unit,
-        daysCutOff: Int = 7,
         onError: (msg: String) -> Unit,
         onComplete: (() -> Unit)? = null
     ) {
-        this.client(context, daysCutOff) { client ->
+        this.client(context) { client ->
             val id = account.accountCommon.id
             val retailerId = RetailerEnum.fromString(id).toMbInt()
             val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
@@ -388,7 +385,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun client(
         context: Context,
-        dayCutoff: Int = 7,
+        dayCutoff: Int = 15,
         latestOrdersOnly: Boolean = true,
         countryCode: String = "US",
         onClientReady: (AccountLinkingClient) -> Unit

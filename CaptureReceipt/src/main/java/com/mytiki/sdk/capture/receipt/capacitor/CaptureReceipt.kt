@@ -14,6 +14,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.FragmentManager
+import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.email.Email
 
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
@@ -241,11 +242,12 @@ object CaptureReceipt {
      */
     fun receipts(
         context: Context,
-        account: AccountCommon,
-        onReceipt: (Receipt) -> Void,
+        accountCommon: AccountCommon,
+        onReceipt: (Receipt) -> Unit,
         onError: (Exception) -> Unit,
-        onComplete: () -> Void
+        onComplete: () -> Unit
     ) {
+
     }
 
 
@@ -266,10 +268,15 @@ object CaptureReceipt {
     fun receipts(
         context: Context,
         account: Account,
-        onReceipt: (Receipt) -> Void,
-        onError: (Exception) -> Unit,
-        onComplete: () -> Void
+        onReceipt: (ScanResults?) -> Unit,
+        onError: (String) -> Unit,
+        onComplete: () -> Unit
     ) {
+        if (account.accountCommon.type == AccountTypeEnum.EMAIL){
+            email.scrape(context, account, onReceipt, onError, onComplete)
+        } else {
+            retailer.orders(context, account, onReceipt, onError, onComplete)
+        }
     }
 
 
@@ -290,9 +297,9 @@ object CaptureReceipt {
      */
     fun receipts(
         context: Context,
-        onReceipt: (Receipt) -> Void,
+        onReceipt: (Receipt) -> Unit,
         onError: (Exception) -> Unit,
-        onComplete: () -> Void
+        onComplete: () -> Unit
     ) {
     }
 

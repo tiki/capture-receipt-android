@@ -161,26 +161,6 @@ class Email(
                         onComplete()
                     } else {
                         client.dayCutoff(dayCutOff)
-
-                        client.messages(object : MessagesCallback {
-
-                            @SuppressLint("SetTextI18n")
-                            override fun onComplete(
-                                credential: PasswordCredentials,
-                                result: List<ScanResults>
-                            ) {
-                                Timberland.d("credentials $credential results $result")
-
-                            }
-
-                            @SuppressLint("SetTextI18n")
-                            override fun onException(throwable: Throwable) {
-                                Timberland.e(throwable)
-
-                            }
-                        })
-
-
                        client.messages(object : MessagesCallback {
                            override fun onComplete(
                                credential: PasswordCredentials,
@@ -199,6 +179,49 @@ class Email(
                                client.close()
                            }
                        })
+                    }
+                }.addOnFailureListener {
+                    onComplete()
+                }
+            }
+        }
+    }
+
+    fun scrape(
+        context: Context,
+        account: Account,
+        onReceipt: (receipt: ScanResults?) -> Unit,
+        onError: (String) -> Unit,
+        onComplete: () -> Unit
+    ) {
+        MainScope().async {
+            var dayCutOff = 15
+            val now = Calendar.getInstance().timeInMillis
+            val lastScrape = context.getImapScanTime().await()
+            val diffInMillis = now - lastScrape
+            val diffInDays = floor((diffInMillis / 86400000).toDouble()).toInt()
+            if (diffInDays <= 15) {
+                dayCutOff = diffInDays
+            }
+            client(context, onError) { client ->
+                client.accounts().addOnSuccessListener { credentials ->
+                    val emailAccount = credentials.firstOrNull {it.username() == account.username}
+                    if (emailAccount == null) {
+                        onComplete()
+                    } else {
+                        client.dayCutoff(dayCutOff)
+                        client.messages(emailAccount).addOnSuccessListener {result ->
+                            result.forEach { receipt ->
+                                onReceipt(receipt)
+                            }
+                            context.setImapScanTime(now)
+                            onComplete()
+                            client.close()
+                        }.addOnFailureListener {throwable ->
+                            onError(throwable.message.toString())
+                            onComplete()
+                            client.close()
+                        }
                     }
                 }.addOnFailureListener {
                     onComplete()

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mytiki.capture_receipt.example.Input
+import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import com.mytiki.sdk.capture.receipt.capacitor.ui.theme.CaptureReceiptTheme
 import kotlinx.coroutines.MainScope
@@ -41,6 +42,9 @@ class MainActivity : AppCompatActivity() {
                 mutableStateOf("")
             }
             var accountsOutput by remember {
+                mutableStateOf("")
+            }
+            var receiptsOutput by remember {
                 mutableStateOf("")
             }
             var username by remember {
@@ -142,14 +146,17 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
                         if (accountsOutput.isNotBlank()) {
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(30.dp))
                             Text(
                                 text = accountsOutput,
                                 color = MaterialTheme.colorScheme.primary,
                                 textAlign = TextAlign.Justify
                             )
+                            Spacer(modifier = Modifier.height(30.dp))
+                        } else{
+                            Spacer(modifier = Modifier.height(60.dp))
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
+
                         MainButton(text = "Accounts") {
                             MainScope().async {
                                 val list = CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }.await()
@@ -157,7 +164,56 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
+                        if (receiptsOutput.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(30.dp))
+                            Text(
+                                text = receiptsOutput,
+                                color = MaterialTheme.colorScheme.primary,
+                                textAlign = TextAlign.Justify
+                            )
+                            Spacer(modifier = Modifier.height(30.dp))
+                        } else{
+                            Spacer(modifier = Modifier.height(60.dp))
+                        }
+
+                        MainButton(text = "Get Receipts accounts Gmail") {
+                            CaptureReceipt.receipts(
+                                this@MainActivity,
+                                Account(AccountCommon.GMAIL, username),
+                                {
+                                    if (it != null) {
+                                        receiptsOutput = "${it.clientMerchantName()}"
+                                    }
+                                },
+                                {receiptsOutput = it},
+                                {receiptsOutput = "worked"}
+                            )
+                        }
                         Spacer(modifier = Modifier.height(20.dp))
+                        MainButton(text = "Get Receipts accounts Amazon") {
+                            CaptureReceipt.receipts(
+                                this@MainActivity,
+                                Account(AccountCommon.AMAZON, username),
+                                {
+                                    if (it != null) {
+                                        receiptsOutput = "${it.clientMerchantName()}"
+                                    }
+                                },
+                                {receiptsOutput = it},
+                                {receiptsOutput = "worked"}
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MainButton(text = "Get Receipts Amazon") {
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MainButton(text = "Get Receipts Gmail") {
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MainButton(text = "Get All Receipts") {
+                        }
+
+                        Spacer(modifier = Modifier.height(60.dp))
                         MainButton(text = "Logout Gmail") {
                             CaptureReceipt.logout(this@MainActivity, username, AccountCommon.GMAIL, {loginOutput = "worked"}){errorOutput = it}
                         }
