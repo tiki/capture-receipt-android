@@ -142,7 +142,8 @@ class MainActivity : AppCompatActivity() {
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Accounts") {
                             MainScope().async {
-                                accountsOutput = CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }.await().toString()
+                                val list = CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }.await()
+                                accountsOutput = list.toString()
                             }
                         }
                     }

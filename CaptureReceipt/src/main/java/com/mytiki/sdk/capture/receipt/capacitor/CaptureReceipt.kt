@@ -184,7 +184,8 @@ object CaptureReceipt {
             email.accounts(context, { accountsList.add(it) }, { onError(it) }){emailDeferred.complete(Unit)}
             retailer.accounts(context, { accountsList.add(it) }, { onError(it) }) {retailerDeferred.complete(Unit)}
             awaitAll(emailDeferred, retailerDeferred)
-        }.invokeOnCompletion { accountsDeferred.complete(accountsList) }
+            accountsDeferred.complete(accountsList)
+        }
         return accountsDeferred
     }
 

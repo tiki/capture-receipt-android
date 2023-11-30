@@ -230,7 +230,6 @@ class Email(
                         for (credential in credentials) {
                             val account = Account.fromEmailAccount(credential)
                             account.isVerified = true
-                            Log.d("***********", "${account.username}")
                             onAccount(account)
                             returnedAccounts++
                             if (returnedAccounts == credentials.size) {
