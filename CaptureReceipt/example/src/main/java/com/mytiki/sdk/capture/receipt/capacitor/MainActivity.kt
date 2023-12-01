@@ -177,13 +177,12 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         MainButton(text = "Get Receipts accounts Gmail") {
-                            CaptureReceipt.receipts(
+                            CaptureReceipt.scrape(
                                 this@MainActivity,
                                 Account(AccountCommon.GMAIL, username),
                                 {
-                                    if (it != null) {
-                                        receiptsOutput = "${it.clientMerchantName()}"
-                                    }
+                                   receiptsOutput = "${it?.clientMerchantName()}"
+
                                 },
                                 {receiptsOutput = it},
                                 {receiptsOutput = "worked"}
@@ -191,13 +190,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Get Receipts accounts Amazon") {
-                            CaptureReceipt.receipts(
+                            CaptureReceipt.scrape(
                                 this@MainActivity,
                                 Account(AccountCommon.AMAZON, username),
                                 {
-                                    if (it != null) {
-                                        receiptsOutput = "${it.clientMerchantName()}"
-                                    }
+                                    receiptsOutput = "${it?.clientMerchantName()}"
                                 },
                                 {receiptsOutput = it},
                                 {receiptsOutput = "worked"}
