@@ -17,7 +17,7 @@ import org.json.JSONObject
  *
  * @param scanResults The scan results containing the data to populate this receipt.
  */
-class Receipt(requestId: String, scanResults: ScanResults){
+class Receipt(scanResults: ScanResults){
 
     private val receiptDate: CaptureStringType?
     private val receiptTime: CaptureStringType?
@@ -139,7 +139,7 @@ class Receipt(requestId: String, scanResults: ScanResults){
         instacartShopper = scanResults.isInstacartShopper
         eReceipt = scanResults.eReceipt()
         eReceiptComponentEmails =
-            scanResults.eReceiptComponentEmails()?.map { res -> Receipt(requestId, res) }
+            scanResults.eReceiptComponentEmails()?.map { res -> Receipt(res) }
                 ?: emptyList()
         duplicate = scanResults.duplicate()
         fraudulent = scanResults.fraudulent()
@@ -284,7 +284,7 @@ class Receipt(requestId: String, scanResults: ScanResults){
          * @param scanResults The scan results to create an RSP receipt from.
          * @return An optional RSPReceipt instance, or null if scanResults is null.
          */
-        fun opt(requestId: String, scanResults: ScanResults?): Receipt? =
-            if (scanResults != null) Receipt(requestId, scanResults) else null
+        fun opt(scanResults: ScanResults?): Receipt? =
+            if (scanResults != null) Receipt(scanResults) else null
     }
 }

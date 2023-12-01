@@ -13,13 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.microblink.core.ScanResults
-import com.mytiki.sdk.capture.receipt.capacitor.email.Email
-
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountTypeEnum
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.old.Receipt
+import com.mytiki.sdk.capture.receipt.capacitor.email.Email
+import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import com.mytiki.sdk.capture.receipt.capacitor.retailer.Retailer
 import com.mytiki.tiki_sdk_android.TikiSdk
 import com.mytiki.tiki_sdk_android.trail.License
@@ -267,7 +265,7 @@ object CaptureReceipt {
     fun scrape(
         context: Context,
         account: Account,
-        onReceipt: (ScanResults?) -> Unit,
+        onReceipt: (Receipt?) -> Unit,
         onError: (String) -> Unit,
         onComplete: () -> Unit
     ) {

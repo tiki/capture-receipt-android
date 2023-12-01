@@ -1,6 +1,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
@@ -181,11 +182,11 @@ class MainActivity : AppCompatActivity() {
                                 this@MainActivity,
                                 Account(AccountCommon.GMAIL, username),
                                 {
-                                   receiptsOutput = "${it?.clientMerchantName()}"
-
+                                    receiptsOutput = "${it?.toJS()}"
+                                    Log.d("*********************", it?.toJS().toString())
                                 },
                                 {receiptsOutput = it},
-                                {receiptsOutput = "worked"}
+                                {}
                             )
                         }
                         Spacer(modifier = Modifier.height(20.dp))
@@ -194,10 +195,11 @@ class MainActivity : AppCompatActivity() {
                                 this@MainActivity,
                                 Account(AccountCommon.AMAZON, username),
                                 {
-                                    receiptsOutput = "${it?.clientMerchantName()}"
+                                    receiptsOutput = "${it?.toJS()}"
+                                    Log.d("*********************", it?.toJS().toString())
                                 },
                                 {receiptsOutput = it},
-                                {receiptsOutput = "worked"}
+                                {}
                             )
                         }
                         Spacer(modifier = Modifier.height(20.dp))

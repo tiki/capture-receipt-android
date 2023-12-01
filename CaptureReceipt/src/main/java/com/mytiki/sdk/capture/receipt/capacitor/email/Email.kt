@@ -26,6 +26,7 @@ import com.mytiki.capture_receipt.email.getImapScanTime
 import com.mytiki.capture_receipt.email.setImapScanTime
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
+import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -142,7 +143,7 @@ class Email(
      */
     fun scrape(
         context: Context,
-        onReceipt: (receipt: ScanResults?) -> Unit,
+        onReceipt: (receipt: Receipt?) -> Unit,
         onError: (msg: String) -> Unit,
         onComplete: () -> Unit
     ) {
@@ -167,7 +168,7 @@ class Email(
                                result: List<ScanResults>
                            ) {
                                result.forEach { receipt ->
-                                   onReceipt(receipt)
+                                   onReceipt(Receipt.opt(receipt))
                                }
                                context.setImapScanTime(now)
                                onComplete()
@@ -190,7 +191,7 @@ class Email(
     fun scrape(
         context: Context,
         account: Account,
-        onReceipt: (receipt: ScanResults?) -> Unit,
+        onReceipt: (receipt: Receipt?) -> Unit,
         onError: (String) -> Unit,
         onComplete: () -> Unit
     ) {
@@ -212,7 +213,7 @@ class Email(
                         client.dayCutoff(dayCutOff)
                         client.messages(emailAccount).addOnSuccessListener {result ->
                             result.forEach { receipt ->
-                                onReceipt(receipt)
+                                onReceipt(Receipt.opt(receipt))
                             }
                             context.setImapScanTime(now)
                             onComplete()
@@ -290,19 +291,23 @@ class Email(
     ) {
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { list ->
-                val passwordCredentials = list.first {
-                    it.username() == account.username && it.provider() == EmailEnum.fromString(
-                        account.accountCommon.id
-                    ).value
+                val passwordCredentials = list.firstOrNull {
+                    it.username() == account.username && it.provider() == EmailEnum.fromString(account.accountCommon.id).value
                 }
-                client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
-                context.deleteImapScanTime()
-                client.logout(passwordCredentials).addOnSuccessListener {
-                    onRemove()
-                }.addOnFailureListener {
+                if (passwordCredentials != null) {
+                    client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
+                    context.deleteImapScanTime()
+                    client.logout(passwordCredentials).addOnSuccessListener {
+                        onRemove()
+                    }.addOnFailureListener {
+                        onError(
+                            it.message
+                                ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.id}"
+                        )
+                    }
+                } else {
                     onError(
-                        it.message
-                            ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.id}"
+                        "Unknown error when removing account ${account.username} from ${account.accountCommon.id}"
                     )
                 }
             }
@@ -320,7 +325,7 @@ class Email(
     fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
             client.clearLastCheckedTime()
-            //context.deleteImapScanTime()
+            context.deleteImapScanTime()
             client.logout().addOnSuccessListener {
                 onComplete()
             }.addOnFailureListener {

@@ -26,6 +26,7 @@ import com.microblink.linking.PasswordCredentials
 import com.microblink.linking.VERIFICATION_NEEDED
 import com.mytiki.sdk.capture.receipt.capacitor.R
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
+import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
@@ -192,7 +193,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
-        onReceipt: (ScanResults?) -> Unit,
+        onScan: (Receipt?) -> Unit,
         onError: (msg: String) -> Unit,
         onComplete: () -> Unit
     ) {
@@ -209,7 +210,7 @@ class Retailer {
                             this.orders(
                                 context,
                                 account,
-                                onReceipt,
+                                onScan,
                                 onError,
                             ) {
                                 fetchedAccounts++
@@ -243,7 +244,7 @@ class Retailer {
     fun orders(
         context: Context,
         account: Account,
-        onScan: (ScanResults?) -> Unit,
+        onScan: (Receipt?) -> Unit,
         onError: (msg: String) -> Unit,
         onComplete: (() -> Unit)? = null
     ) {
@@ -252,7 +253,7 @@ class Retailer {
             val retailerId = RetailerEnum.fromString(id).toMbInt()
             val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
                 { _: Int, results: ScanResults?, remaining: Int, _: String ->
-                    onScan(results)
+                    onScan(Receipt.opt(results))
                     if (remaining == 0) {
                         onComplete?.invoke()
                         client.close()
