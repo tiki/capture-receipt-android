@@ -228,7 +228,7 @@ object CaptureReceipt {
      * such as email or retailer accounts, from the user's connected accounts.
      *
      * @param context The Android application context.
-     * @param account The type of account for which to retrieve receipt data.
+     * @param accountCommon The type of account for which to retrieve receipt data.
      * @param onReceipt A callback function to execute for each retrieved receipt.
      * It provides the retrieved Receipt object as a parameter.
      * @param onError A callback function to execute if there is an error during data retrieval.
@@ -240,11 +240,15 @@ object CaptureReceipt {
     fun scrape(
         context: Context,
         accountCommon: AccountCommon,
-        onReceipt: (Receipt) -> Unit,
-        onError: (Exception) -> Unit,
+        onReceipt: (Receipt?) -> Unit,
+        onError: (String) -> Unit,
         onComplete: () -> Unit
     ) {
-
+        if (accountCommon.type == AccountTypeEnum.EMAIL){
+            email.scrape(context, onReceipt, onError, onComplete)
+        } else {
+            retailer.orders(context, onReceipt, onError, onComplete)
+        }
     }
 
 
@@ -294,10 +298,11 @@ object CaptureReceipt {
      */
     fun scrape(
         context: Context,
-        onReceipt: (Receipt) -> Unit,
-        onError: (Exception) -> Unit,
+        onReceipt: (Receipt?) -> Unit,
+        onError: (String) -> Unit,
         onComplete: () -> Unit
     ) {
+        email.scrape(context, onReceipt, onError, onComplete)
+        retailer.orders(context, onReceipt, onError, onComplete)
     }
-
 }
