@@ -183,7 +183,6 @@ class MainActivity : AppCompatActivity() {
                                 Account(AccountCommon.GMAIL, username),
                                 {
                                     receiptsOutput = "${it?.toJS()}"
-                                    Log.d("*********************", it?.toJS().toString())
                                 },
                                 {receiptsOutput = it},
                                 {}
@@ -196,7 +195,6 @@ class MainActivity : AppCompatActivity() {
                                 Account(AccountCommon.AMAZON, username),
                                 {
                                     receiptsOutput = "${it?.toJS()}"
-                                    Log.d("*********************", it?.toJS().toString())
                                 },
                                 {receiptsOutput = it},
                                 {}
@@ -204,12 +202,38 @@ class MainActivity : AppCompatActivity() {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Get Receipts Amazon") {
+                            CaptureReceipt.scrape(
+                                this@MainActivity,
+                                AccountCommon.AMAZON,
+                                {
+                                    receiptsOutput = "${it?.toJS()}"
+                                },
+                                {receiptsOutput = it},
+                                {}
+                            )
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Get Receipts Gmail") {
+                            CaptureReceipt.scrape(
+                                this@MainActivity,
+                                AccountCommon.GMAIL,
+                                {
+                                    receiptsOutput = "${it?.toJS()}"
+                                },
+                                {receiptsOutput = it},
+                                {}
+                            )
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Get All Receipts") {
+                            CaptureReceipt.scrape(
+                                this@MainActivity,
+                                {
+                                    receiptsOutput = "${it?.toJS()}"
+                                },
+                                {receiptsOutput = it},
+                                {}
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(60.dp))
