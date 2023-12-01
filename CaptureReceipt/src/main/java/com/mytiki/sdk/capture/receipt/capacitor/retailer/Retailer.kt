@@ -26,6 +26,7 @@ import com.microblink.linking.PasswordCredentials
 import com.microblink.linking.VERIFICATION_NEEDED
 import com.mytiki.sdk.capture.receipt.capacitor.R
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
+import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
@@ -192,9 +193,8 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
-        onReceipt: (ScanResults?) -> Unit,
+        onScan: (Receipt?) -> Unit,
         onError: (msg: String) -> Unit,
-        daysCutOff: Int = 15,
         onComplete: () -> Unit
     ) {
         this.client(context) { client ->
@@ -210,8 +210,7 @@ class Retailer {
                             this.orders(
                                 context,
                                 account,
-                                onReceipt,
-                                daysCutOff,
+                                onScan,
                                 onError,
                             ) {
                                 fetchedAccounts++
@@ -245,17 +244,16 @@ class Retailer {
     fun orders(
         context: Context,
         account: Account,
-        onScan: (ScanResults?) -> Unit,
-        daysCutOff: Int = 7,
+        onScan: (Receipt?) -> Unit,
         onError: (msg: String) -> Unit,
         onComplete: (() -> Unit)? = null
     ) {
-        this.client(context, daysCutOff) { client ->
+        this.client(context) { client ->
             val id = account.accountCommon.id
             val retailerId = RetailerEnum.fromString(id).toMbInt()
             val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
                 { _: Int, results: ScanResults?, remaining: Int, _: String ->
-                    onScan(results)
+                    onScan(Receipt.opt(results))
                     if (remaining == 0) {
                         onComplete?.invoke()
                         client.close()
@@ -388,7 +386,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun client(
         context: Context,
-        dayCutoff: Int = 7,
+        dayCutoff: Int = 15,
         latestOrdersOnly: Boolean = true,
         countryCode: String = "US",
         onClientReady: (AccountLinkingClient) -> Unit

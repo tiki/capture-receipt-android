@@ -13,12 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.fragment.app.FragmentManager
-import com.mytiki.sdk.capture.receipt.capacitor.email.Email
-
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountTypeEnum
+import com.mytiki.sdk.capture.receipt.capacitor.email.Email
 import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import com.mytiki.sdk.capture.receipt.capacitor.retailer.Retailer
 import com.mytiki.tiki_sdk_android.TikiSdk
@@ -239,20 +237,21 @@ object CaptureReceipt {
      * This function can be used to perform any cleanup or additional actions
      * once the retrieval process is finished.
      */
-    fun receipts(
+    fun scrape(
         context: Context,
-        account: AccountCommon,
-        onReceipt: (Receipt) -> Void,
+        accountCommon: AccountCommon,
+        onReceipt: (Receipt) -> Unit,
         onError: (Exception) -> Unit,
-        onComplete: () -> Void
+        onComplete: () -> Unit
     ) {
+
     }
 
 
     /**
      * Retrieve digital receipt data for a specific account.
      *
-     * This function allows you to retrieve digital receipts associated with a specific account
+     * This function allows you to retrieve digital scrape associated with a specific account
      * from the user's connected accounts.
      *
      * @param context The Android application context.
@@ -263,20 +262,25 @@ object CaptureReceipt {
      * offering an Error object for error details.
      * @param onComplete A callback function executed upon the completion of the data retrieval process.
      */
-    fun receipts(
+    fun scrape(
         context: Context,
         account: Account,
-        onReceipt: (Receipt) -> Void,
-        onError: (Exception) -> Unit,
-        onComplete: () -> Void
+        onReceipt: (Receipt?) -> Unit,
+        onError: (String) -> Unit,
+        onComplete: () -> Unit
     ) {
+        if (account.accountCommon.type == AccountTypeEnum.EMAIL){
+            email.scrape(context, account, onReceipt, onError, onComplete)
+        } else {
+            retailer.orders(context, account, onReceipt, onError, onComplete)
+        }
     }
 
 
     /**
      * Retrieve digital receipt data for all connected accounts.
      *
-     * This function allows you to retrieve digital receipts associated with all of the user's
+     * This function allows you to retrieve digital scrape associated with all of the user's
      * connected accounts. It provides a convenient way to collect receipt data from multiple
      * accounts and simplifies the data retrieval process.
      *
@@ -288,11 +292,11 @@ object CaptureReceipt {
      * @param onComplete A callback function executed upon the completion of the data retrieval
      * process.
      */
-    fun receipts(
+    fun scrape(
         context: Context,
-        onReceipt: (Receipt) -> Void,
+        onReceipt: (Receipt) -> Unit,
         onError: (Exception) -> Unit,
-        onComplete: () -> Void
+        onComplete: () -> Unit
     ) {
     }
 
