@@ -84,9 +84,14 @@ dependencies {
     implementation("com.mytiki:tiki-sdk-android:2.2.1")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("javax.inject:javax.inject:1")
 
     implementation ("androidx.test:monitor:1.6.1")
     implementation ("androidx.test.ext:junit-ktx:1.1.5")
+
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
     testImplementation ("io.mockk:mockk:$mockkVersion")
@@ -95,10 +100,6 @@ dependencies {
     testImplementation ("org.json:json:20230227")
     testImplementation ("junit:junit:$junitVersion")
     testImplementation ("io.mockk:mockk:$mockkVersion")
-
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
