@@ -19,6 +19,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.account.AccountTypeEnum
 import com.mytiki.sdk.capture.receipt.capacitor.email.Email
 import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import com.mytiki.sdk.capture.receipt.capacitor.retailer.Retailer
+import com.mytiki.sdk.capture.receipt.capacitor.utils.ApiService
 import com.mytiki.tiki_sdk_android.TikiSdk
 import com.mytiki.tiki_sdk_android.trail.License
 import com.mytiki.tiki_sdk_android.trail.Tag
@@ -265,9 +266,9 @@ object CaptureReceipt {
         onComplete: () -> Unit
     ) {
         if (accountCommon.type == AccountTypeEnum.EMAIL) {
-            email.scrape(context, onReceipt, onError, onComplete)
+            email.scrape(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
         } else {
-            retailer.orders(context, onReceipt, onError, onComplete)
+            retailer.orders(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
         }
     }
 
@@ -294,9 +295,9 @@ object CaptureReceipt {
         onComplete: () -> Unit
     ) {
         if (account.accountCommon.type == AccountTypeEnum.EMAIL) {
-            email.scrape(context, account, onReceipt, onError, onComplete)
+            email.scrape(context, account, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
         } else {
-            retailer.orders(context, account, onReceipt, onError, onComplete)
+            retailer.orders(context, account, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
         }
     }
 
@@ -322,7 +323,7 @@ object CaptureReceipt {
         onError: (String) -> Unit,
         onComplete: () -> Unit
     ) {
-        email.scrape(context, onReceipt, onError, onComplete)
-        retailer.orders(context, onReceipt, onError, onComplete)
+        email.scrape(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
+        retailer.orders(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
     }
 }

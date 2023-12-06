@@ -11,6 +11,8 @@ import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.databinding.PhysicalActivityBinding
 import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
+import com.mytiki.sdk.capture.receipt.capacitor.utils.ApiService
+import java.io.IOException
 
 const val SCAN_RECEIPT_REQUEST = 420
 
@@ -51,6 +53,9 @@ class PhysicalActivity : AppCompatActivity() {
             val scanResults: ScanResults? = data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
             val media: Media? = data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
             val receipt = Receipt.opt(scanResults)
+            ApiService.publishReceipts(receipt, {}){
+                throw IOException(it)
+            }
         }
         this@PhysicalActivity.finish()
     }
