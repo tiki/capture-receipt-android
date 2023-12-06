@@ -3,8 +3,6 @@ package com.mytiki.sdk.capture.receipt.capacitor.physical
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.microblink.FrameCharacteristics
 import com.microblink.Media
@@ -15,7 +13,8 @@ import com.mytiki.sdk.capture.receipt.capacitor.databinding.PhysicalActivityBind
 import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 
 const val SCAN_RECEIPT_REQUEST = 420
-class PhysicalActivity: AppCompatActivity() {
+
+class PhysicalActivity : AppCompatActivity() {
 
     private var _binding: PhysicalActivityBinding? = null
     private val binding get() = _binding!!
@@ -40,10 +39,12 @@ class PhysicalActivity: AppCompatActivity() {
         this.startActivityForResult(intent, SCAN_RECEIPT_REQUEST)
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith(
-        "super.onActivityResult(requestCode, resultCode, data)",
-        "androidx.appcompat.app.AppCompatActivity"
-    ))
+    @Deprecated(
+        "Deprecated in Java", ReplaceWith(
+            "super.onActivityResult(requestCode, resultCode, data)",
+            "androidx.appcompat.app.AppCompatActivity"
+        )
+    )
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SCAN_RECEIPT_REQUEST && resultCode == Activity.RESULT_OK) {

@@ -17,17 +17,17 @@ import org.json.JSONObject
  *
  * @param paymentMethod The [PaymentMethod] instance to be wrapped.
  */
-class PaymentMethod(paymentMethod: PaymentMethod) {
-    private val paymentMethod: CaptureStringType?
-    private val cardType: CaptureStringType?
-    private val cardIssuer: CaptureStringType?
-    private val amount: CaptureFloatType?
+class ReceiptPaymentMethod(paymentMethod: PaymentMethod) {
+    private val paymentMethod: ReceiptStringType?
+    private val cardType: ReceiptStringType?
+    private val cardIssuer: ReceiptStringType?
+    private val amount: ReceiptFloatType?
 
     init {
-        this.paymentMethod = CaptureStringType.opt(paymentMethod.paymentMethod())
-        cardType = CaptureStringType.opt(paymentMethod.cardType())
-        cardIssuer = CaptureStringType.opt(paymentMethod.cardIssuer())
-        amount = CaptureFloatType.opt(paymentMethod.amount())
+        this.paymentMethod = ReceiptStringType.opt(paymentMethod.paymentMethod())
+        cardType = ReceiptStringType.opt(paymentMethod.cardType())
+        cardIssuer = ReceiptStringType.opt(paymentMethod.cardIssuer())
+        amount = ReceiptFloatType.opt(paymentMethod.amount())
     }
 
     /**
@@ -50,7 +50,7 @@ class PaymentMethod(paymentMethod: PaymentMethod) {
          * @param paymentMethod The [PaymentMethod] instance to be converted.
          * @return An [PaymentMethod] instance if [paymentMethod] is not null; otherwise, null.
          */
-        fun opt(paymentMethod: PaymentMethod?): com.mytiki.sdk.capture.receipt.capacitor.receipt.PaymentMethod? =
-            if (paymentMethod != null) PaymentMethod(paymentMethod) else null
+        fun opt(paymentMethod: PaymentMethod?): ReceiptPaymentMethod? =
+            if (paymentMethod != null) ReceiptPaymentMethod(paymentMethod) else null
     }
 }

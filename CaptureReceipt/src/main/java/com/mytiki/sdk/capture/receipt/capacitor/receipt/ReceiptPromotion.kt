@@ -12,9 +12,9 @@ import org.json.JSONObject
 /**
  * Represents a promotional item as a response in the TIKI SDK.
  *
- * @property promotion The [Promotion] object to convert into an CapturePromotion.
+ * @property promotion The [Promotion] object to convert into an ReceiptPromotion.
  */
-class CapturePromotion(promotion: Promotion) {
+class ReceiptPromotion(promotion: Promotion) {
     private val id: Long
     private val slug: String?
     private val reward: Double?
@@ -36,9 +36,9 @@ class CapturePromotion(promotion: Promotion) {
     }
 
     /**
-     * Converts the CapturePromotion object into a JSON representation.
+     * Converts the ReceiptPromotion object into a JSON representation.
      *
-     * @return A [JSONObject] containing the JSON representation of the CapturePromotion.
+     * @return A [JSONObject] containing the JSON representation of the ReceiptPromotion.
      */
     fun toJS(): JSONObject =
         JSONObject()
@@ -58,7 +58,7 @@ class CapturePromotion(promotion: Promotion) {
          * @param promotion The [Promotion] object to convert.
          * @return An [Promotion] object or null if the input is null.
          */
-        fun opt(promotion: Promotion?): CapturePromotion? =
-            if (promotion != null) CapturePromotion(promotion) else null
+        fun opt(promotion: Promotion?): ReceiptPromotion? =
+            if (promotion != null) ReceiptPromotion(promotion) else null
     }
 }

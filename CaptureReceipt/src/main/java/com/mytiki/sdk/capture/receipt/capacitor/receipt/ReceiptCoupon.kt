@@ -13,18 +13,18 @@ import org.json.JSONObject
  *
  * @property coupon The [Coupon] object containing coupon information.
  */
-class Coupon(coupon: Coupon) {
+class ReceiptCoupon(coupon: Coupon) {
     private val type: String?
-    private val amount: CaptureFloatType?
-    private val sku: CaptureStringType?
-    private val description: CaptureStringType?
+    private val amount: ReceiptFloatType?
+    private val sku: ReceiptStringType?
+    private val description: ReceiptStringType?
     private val relatedProductIndex: Int
 
     init {
         type = coupon.typeToString()
-        amount = CaptureFloatType.opt(coupon.amount())
-        sku = CaptureStringType.opt(coupon.sku())
-        description = CaptureStringType.opt(coupon.description())
+        amount = ReceiptFloatType.opt(coupon.amount())
+        sku = ReceiptStringType.opt(coupon.sku())
+        description = ReceiptStringType.opt(coupon.description())
         relatedProductIndex = coupon.relatedProductIndex()
     }
 
@@ -48,7 +48,7 @@ class Coupon(coupon: Coupon) {
          * @param coupon The [Coupon] object to convert.
          * @return An [Coupon] object if [coupon] is not null, otherwise null.
          */
-        fun opt(coupon: Coupon?): com.mytiki.sdk.capture.receipt.capacitor.receipt.Coupon? =
-            if (coupon != null) Coupon(coupon) else null
+        fun opt(coupon: Coupon?): com.mytiki.sdk.capture.receipt.capacitor.receipt.ReceiptCoupon? =
+            if (coupon != null) ReceiptCoupon(coupon) else null
     }
 }

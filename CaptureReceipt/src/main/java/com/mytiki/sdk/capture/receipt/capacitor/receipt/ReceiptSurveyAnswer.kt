@@ -13,7 +13,7 @@ import org.json.JSONObject
  *
  * @property SurveyAnswer The underlying survey answer to be represented.
  */
-class CaptureSurveyAnswer(surveyAnswer: SurveyAnswer) {
+class ReceiptSurveyAnswer(surveyAnswer: SurveyAnswer) {
     private val id: Int
     private val text: String?
     private val nextQuestionIndex: Int?
@@ -42,8 +42,8 @@ class CaptureSurveyAnswer(surveyAnswer: SurveyAnswer) {
          * @param surveyAnswer The survey answer to create an RSP survey answer from.
          * @return An optional RSP survey answer, or null if the input is null.
          */
-        fun opt(surveyAnswer: SurveyAnswer?): CaptureSurveyAnswer? =
-            if (surveyAnswer != null) CaptureSurveyAnswer(
+        fun opt(surveyAnswer: SurveyAnswer?): ReceiptSurveyAnswer? =
+            if (surveyAnswer != null) ReceiptSurveyAnswer(
                 surveyAnswer
             ) else null
     }

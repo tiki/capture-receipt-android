@@ -10,18 +10,18 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 /**
- * Represents a survey question in the RSP (Receipt CaptureSurvey Processor) module.
+ * Represents a survey question in the RSP (Receipt ReceiptSurvey Processor) module.
  *
  * @param surveyQuestion The [SurveyQuestion] object from the Microblink SDK.
  */
-class CaptureSurveyQuestion(surveyQuestion: SurveyQuestion) {
+class ReceiptSurveyQuestion(surveyQuestion: SurveyQuestion) {
     private val myIndex: Int
     private val lastQuestion: Boolean
     private val nextQuestionIndex: Int
     private val serverId: Int
     private val text: String?
     private val type: String?
-    private val answers: List<CaptureSurveyAnswer>
+    private val answers: List<ReceiptSurveyAnswer>
     private val multipleAnswers: Boolean
     private val totalNumberOfQuestions: Int
 
@@ -32,15 +32,16 @@ class CaptureSurveyQuestion(surveyQuestion: SurveyQuestion) {
         serverId = surveyQuestion.serverId()
         text = surveyQuestion.text()
         type = surveyQuestion.type()?.a
-        answers = surveyQuestion.answers()?.map { answer -> CaptureSurveyAnswer(answer) } ?: emptyList()
+        answers =
+            surveyQuestion.answers()?.map { answer -> ReceiptSurveyAnswer(answer) } ?: emptyList()
         multipleAnswers = surveyQuestion.multipleAnswers()
         totalNumberOfQuestions = surveyQuestion.totalNumberOfQuestions()
     }
 
     /**
-     * Converts the CaptureSurveyQuestion object to a JSON representation.
+     * Converts the ReceiptSurveyQuestion object to a JSON representation.
      *
-     * @return A [JSONObject] representing the CaptureSurveyQuestion.
+     * @return A [JSONObject] representing the ReceiptSurveyQuestion.
      */
     fun toJS(): JSONObject =
         JSONObject()
@@ -56,13 +57,13 @@ class CaptureSurveyQuestion(surveyQuestion: SurveyQuestion) {
 
     companion object {
         /**
-         * Creates an CaptureSurveyQuestion instance from a [SurveyQuestion] object.
+         * Creates an ReceiptSurveyQuestion instance from a [SurveyQuestion] object.
          *
          * @param surveyQuestion The [SurveyQuestion] object to convert.
          * @return An [SurveyQuestion] instance or null if the input is null.
          */
-        fun opt(surveyQuestion: SurveyQuestion?): CaptureSurveyQuestion? =
-            if (surveyQuestion != null) CaptureSurveyQuestion(
+        fun opt(surveyQuestion: SurveyQuestion?): ReceiptSurveyQuestion? =
+            if (surveyQuestion != null) ReceiptSurveyQuestion(
                 surveyQuestion
             ) else null
     }

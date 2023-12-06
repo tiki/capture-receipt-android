@@ -13,7 +13,7 @@ import org.json.JSONObject
  *
  * @param stringType The [StringType] recognized by the TIKI SDK.
  */
-class CaptureStringType(stringType: StringType) {
+class ReceiptStringType(stringType: StringType) {
     /**
      * The confidence score of the recognized string.
      */
@@ -30,7 +30,7 @@ class CaptureStringType(stringType: StringType) {
     }
 
     /**
-     * Converts the [CaptureStringType] object to a JSON representation.
+     * Converts the [ReceiptStringType] object to a JSON representation.
      *
      * @return A [JSONObject] containing the confidence and value of the recognized string.
      */
@@ -41,12 +41,12 @@ class CaptureStringType(stringType: StringType) {
 
     companion object {
         /**
-         * Creates an [CaptureStringType] object from the provided [StringType].
+         * Creates an [ReceiptStringType] object from the provided [StringType].
          *
          * @param stringType The [StringType] to convert.
-         * @return An [CaptureStringType] object representing the provided [StringType], or null if the input is null.
+         * @return An [ReceiptStringType] object representing the provided [StringType], or null if the input is null.
          */
-        fun opt(stringType: StringType?): CaptureStringType? =
-            if (stringType != null) CaptureStringType(stringType) else null
+        fun opt(stringType: StringType?): ReceiptStringType? =
+            if (stringType != null) ReceiptStringType(stringType) else null
     }
 }
