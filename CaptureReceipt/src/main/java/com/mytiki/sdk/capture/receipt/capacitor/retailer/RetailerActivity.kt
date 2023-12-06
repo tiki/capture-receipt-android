@@ -1,13 +1,10 @@
 package com.mytiki.sdk.capture.receipt.capacitor.retailer
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.mytiki.sdk.capture.receipt.capacitor.R
-import com.mytiki.sdk.capture.receipt.capacitor.databinding.PhysicalActivityBinding
 import com.mytiki.sdk.capture.receipt.capacitor.databinding.RetailerActivityBinding
 
-class RetailerActivity: AppCompatActivity() {
+class RetailerActivity : AppCompatActivity() {
 
     private var _binding: RetailerActivityBinding? = null
     private val binding get() = _binding!!

@@ -9,14 +9,11 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.PackageManager.*
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.microblink.BlinkReceiptSdk
 import com.microblink.core.InitializeCallback
-import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.physical.PhysicalActivity
 import kotlinx.coroutines.CompletableDeferred
 
@@ -69,7 +66,10 @@ class Physical {
     fun scan(activity: Activity) {
         if (activity.checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_DENIED) {
             val requestPermissionCode = 98734763
-            activity.requestPermissions(listOf(Manifest.permission.CAMERA).toTypedArray(), requestPermissionCode)
+            activity.requestPermissions(
+                listOf(Manifest.permission.CAMERA).toTypedArray(),
+                requestPermissionCode
+            )
         } else {
             activity.startActivity(Intent(activity, PhysicalActivity::class.java))
         }

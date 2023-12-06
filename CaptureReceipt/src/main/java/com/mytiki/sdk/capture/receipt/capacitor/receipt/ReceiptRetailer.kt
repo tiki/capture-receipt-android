@@ -11,9 +11,9 @@ import org.json.JSONObject
 /**
  * Represents a Retailer for the Receipt Scanning Plugin (RSP).
  *
- * @param retailer The retailer object to be wrapped by RetailerReceipt.
+ * @param retailer The retailer object to be wrapped by ReceiptRetailer.
  */
-class RetailerReceipt(retailer: Retailer) {
+class ReceiptRetailer(retailer: Retailer) {
     private val id: Int
     private val bannerId: Int
 
@@ -23,9 +23,9 @@ class RetailerReceipt(retailer: Retailer) {
     }
 
     /**
-     * Converts the RetailerReceipt object to a JSON representation.
+     * Converts the ReceiptRetailer object to a JSON representation.
      *
-     * @return A JSON object representing the RetailerReceipt.
+     * @return A JSON object representing the ReceiptRetailer.
      */
     fun toJS(): JSONObject =
         JSONObject()
@@ -34,12 +34,12 @@ class RetailerReceipt(retailer: Retailer) {
 
     companion object {
         /**
-         * Create an optional RetailerReceipt object from a Retailer object.
+         * Create an optional ReceiptRetailer object from a Retailer object.
          *
          * @param retailer The Retailer object to be converted.
-         * @return An RetailerReceipt object if the input Retailer is not null, otherwise null.
+         * @return An ReceiptRetailer object if the input Retailer is not null, otherwise null.
          */
-        fun opt(retailer: Retailer?): RetailerReceipt? =
-            if (retailer != null) RetailerReceipt(retailer) else null
+        fun opt(retailer: Retailer?): ReceiptRetailer? =
+            if (retailer != null) ReceiptRetailer(retailer) else null
     }
 }

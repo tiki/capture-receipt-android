@@ -1,7 +1,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
@@ -128,8 +127,8 @@ class MainActivity : AppCompatActivity() {
                                 username,
                                 password,
                                 AccountCommon.GMAIL,
-                                {loginOutput = it.toString()},
-                                {errorOutput = it}
+                                { loginOutput = it.toString() },
+                                { errorOutput = it }
                             )
                         }
                         Spacer(modifier = Modifier.height(20.dp))
@@ -142,8 +141,8 @@ class MainActivity : AppCompatActivity() {
                                 username,
                                 password,
                                 AccountCommon.AMAZON,
-                                {loginOutput = "${it.username} - ${it.accountCommon.name}"},
-                                {errorOutput = it}
+                                { loginOutput = "${it.username} - ${it.accountCommon.name}" },
+                                { errorOutput = it }
                             )
                         }
                         if (accountsOutput.isNotBlank()) {
@@ -154,14 +153,17 @@ class MainActivity : AppCompatActivity() {
                                 textAlign = TextAlign.Justify
                             )
                             Spacer(modifier = Modifier.height(30.dp))
-                        } else{
+                        } else {
                             Spacer(modifier = Modifier.height(60.dp))
                         }
 
                         MainButton(text = "Accounts") {
                             MainScope().async {
-                                val list = CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }.await()
-                                accountsOutput = list.map{it.username to it.accountCommon.name}.toString()
+                                val list =
+                                    CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }
+                                        .await()
+                                accountsOutput =
+                                    list.map { it.username to it.accountCommon.name }.toString()
                             }
                         }
 
@@ -173,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                                 textAlign = TextAlign.Justify
                             )
                             Spacer(modifier = Modifier.height(30.dp))
-                        } else{
+                        } else {
                             Spacer(modifier = Modifier.height(60.dp))
                         }
 
@@ -184,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                                 {
                                     receiptsOutput = "${it?.toJS()}"
                                 },
-                                {receiptsOutput = it},
+                                { receiptsOutput = it },
                                 {}
                             )
                         }
@@ -196,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                                 {
                                     receiptsOutput = "${it?.toJS()}"
                                 },
-                                {receiptsOutput = it},
+                                { receiptsOutput = it },
                                 {}
                             )
                         }
@@ -208,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                                 {
                                     receiptsOutput = "${it?.toJS()}"
                                 },
-                                {receiptsOutput = it},
+                                { receiptsOutput = it },
                                 {}
                             )
                         }
@@ -220,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                                 {
                                     receiptsOutput = "${it?.toJS()}"
                                 },
-                                {receiptsOutput = it},
+                                { receiptsOutput = it },
                                 {}
                             )
                         }
@@ -231,22 +233,32 @@ class MainActivity : AppCompatActivity() {
                                 {
                                     receiptsOutput = "${it?.toJS()}"
                                 },
-                                {receiptsOutput = it},
+                                { receiptsOutput = it },
                                 {}
                             )
                         }
 
                         Spacer(modifier = Modifier.height(60.dp))
                         MainButton(text = "Logout Gmail") {
-                            CaptureReceipt.logout(this@MainActivity, username, AccountCommon.GMAIL, {loginOutput = "worked"}){errorOutput = it}
+                            CaptureReceipt.logout(
+                                this@MainActivity,
+                                username,
+                                AccountCommon.GMAIL,
+                                { loginOutput = "worked" }) { errorOutput = it }
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Logout Amazon") {
-                            CaptureReceipt.logout(this@MainActivity, username, AccountCommon.AMAZON, {loginOutput = "worked"}){errorOutput = it}
+                            CaptureReceipt.logout(
+                                this@MainActivity,
+                                username,
+                                AccountCommon.AMAZON,
+                                { loginOutput = "worked" }) { errorOutput = it }
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Flush") {
-                            CaptureReceipt.logout(this@MainActivity, {loginOutput = "worked"}){errorOutput = it}
+                            CaptureReceipt.logout(
+                                this@MainActivity,
+                                { loginOutput = "worked" }) { errorOutput = it }
                         }
 
                         Spacer(modifier = Modifier.height(40.dp))

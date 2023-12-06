@@ -16,13 +16,13 @@ import org.json.JSONObject
  * @property text The text content of the additional line.
  * @property lineNumber The line number of the additional line within the receipt.
  */
-class CaptureAdditionalLine(additionalLine: AdditionalLine) {
-    private val type: CaptureStringType? = CaptureStringType.opt(additionalLine.type())
-    private val text: CaptureStringType? = CaptureStringType.opt(additionalLine.text())
+class ReceiptAditionalLine(additionalLine: AdditionalLine) {
+    private val type: ReceiptStringType? = ReceiptStringType.opt(additionalLine.type())
+    private val text: ReceiptStringType? = ReceiptStringType.opt(additionalLine.text())
     private val lineNumber: Int = additionalLine.lineNumber()
 
     /**
-     * Converts this `CaptureAdditionalLine` object to a JSON representation.
+     * Converts this `ReceiptAditionalLine` object to a JSON representation.
      *
      * @return A `JSONObject` representing the additional line.
      */
@@ -34,12 +34,12 @@ class CaptureAdditionalLine(additionalLine: AdditionalLine) {
 
     companion object {
         /**
-         * Creates an `CaptureAdditionalLine` object from an `CaptureAdditionalLine` if the input is not null.
+         * Creates an `ReceiptAditionalLine` object from an `ReceiptAditionalLine` if the input is not null.
          *
-         * @param additionalLine The `CaptureAdditionalLine` to convert.
-         * @return An `CaptureAdditionalLine` object, or null if the input is null.
+         * @param additionalLine The `ReceiptAditionalLine` to convert.
+         * @return An `ReceiptAditionalLine` object, or null if the input is null.
          */
-        fun opt(additionalLine: AdditionalLine?): CaptureAdditionalLine? =
-            if (additionalLine != null) CaptureAdditionalLine(additionalLine) else null
+        fun opt(additionalLine: AdditionalLine?): ReceiptAditionalLine? =
+            if (additionalLine != null) ReceiptAditionalLine(additionalLine) else null
     }
 }

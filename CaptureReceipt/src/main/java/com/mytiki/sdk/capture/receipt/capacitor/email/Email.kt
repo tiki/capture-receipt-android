@@ -5,13 +5,10 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.email
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.fragment.app.FragmentManager
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
-import com.microblink.core.Timberland
 import com.microblink.digital.BlinkReceiptDigitalSdk
 import com.microblink.digital.ImapClient
 import com.microblink.digital.MessagesCallback
@@ -46,7 +43,7 @@ class Email(
     private var googleAPIKey: String? = null
     private var outlookAPIKey: String? = null
 
-   /**
+    /**
      * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient].
      *
      * @param context The application context.
@@ -162,24 +159,25 @@ class Email(
                         onComplete()
                     } else {
                         client.dayCutoff(dayCutOff)
-                       client.messages(object : MessagesCallback {
-                           override fun onComplete(
-                               credential: PasswordCredentials,
-                               result: List<ScanResults>
-                           ) {
-                               result.forEach { receipt ->
-                                   onReceipt(Receipt.opt(receipt))
-                               }
-                               context.setImapScanTime(now)
-                               onComplete()
-                               client.close()
-                           }
-                           override fun onException(throwable: Throwable) {
-                               onError(throwable.message ?: throwable.toString())
-                               onComplete()
-                               client.close()
-                           }
-                       })
+                        client.messages(object : MessagesCallback {
+                            override fun onComplete(
+                                credential: PasswordCredentials,
+                                result: List<ScanResults>
+                            ) {
+                                result.forEach { receipt ->
+                                    onReceipt(Receipt.opt(receipt))
+                                }
+                                context.setImapScanTime(now)
+                                onComplete()
+                                client.close()
+                            }
+
+                            override fun onException(throwable: Throwable) {
+                                onError(throwable.message ?: throwable.toString())
+                                onComplete()
+                                client.close()
+                            }
+                        })
                     }
                 }.addOnFailureListener {
                     onComplete()
@@ -206,19 +204,19 @@ class Email(
             }
             client(context, onError) { client ->
                 client.accounts().addOnSuccessListener { credentials ->
-                    val emailAccount = credentials.firstOrNull {it.username() == account.username}
+                    val emailAccount = credentials.firstOrNull { it.username() == account.username }
                     if (emailAccount == null) {
                         onComplete()
                     } else {
                         client.dayCutoff(dayCutOff)
-                        client.messages(emailAccount).addOnSuccessListener {result ->
+                        client.messages(emailAccount).addOnSuccessListener { result ->
                             result.forEach { receipt ->
                                 onReceipt(Receipt.opt(receipt))
                             }
                             context.setImapScanTime(now)
                             onComplete()
                             client.close()
-                        }.addOnFailureListener {throwable ->
+                        }.addOnFailureListener { throwable ->
                             onError(throwable.message.toString())
                             onComplete()
                             client.close()
@@ -292,7 +290,9 @@ class Email(
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { list ->
                 val passwordCredentials = list.firstOrNull {
-                    it.username() == account.username && it.provider() == EmailEnum.fromString(account.accountCommon.id).value
+                    it.username() == account.username && it.provider() == EmailEnum.fromString(
+                        account.accountCommon.id
+                    ).value
                 }
                 if (passwordCredentials != null) {
                     client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))

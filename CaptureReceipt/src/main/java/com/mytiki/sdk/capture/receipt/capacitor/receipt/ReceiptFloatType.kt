@@ -14,12 +14,12 @@ import org.json.JSONObject
  * @property confidence The confidence level of the extracted floating-point value.
  * @property value The extracted floating-point value.
  */
-class CaptureFloatType(private val floatType: FloatType) {
+class ReceiptFloatType(floatType: FloatType) {
     private val confidence: Float = floatType.confidence()
     private val value: Float = floatType.value()
 
     /**
-     * Converts the CaptureFloatType object to a JSON representation.
+     * Converts the ReceiptFloatType object to a JSON representation.
      *
      * @return A JSONObject containing the confidence and value of the floating-point type.
      */
@@ -30,12 +30,12 @@ class CaptureFloatType(private val floatType: FloatType) {
 
     companion object {
         /**
-         * Creates an CaptureFloatType instance from a FloatType object, if it is not null.
+         * Creates an ReceiptFloatType instance from a FloatType object, if it is not null.
          *
-         * @param floatType The FloatType object to convert to CaptureFloatType.
-         * @return An CaptureFloatType instance or null if the input floatType is null.
+         * @param floatType The FloatType object to convert to ReceiptFloatType.
+         * @return An ReceiptFloatType instance or null if the input floatType is null.
          */
-        fun opt(floatType: FloatType?): CaptureFloatType? =
-            if (floatType != null) CaptureFloatType(floatType) else null
+        fun opt(floatType: FloatType?): ReceiptFloatType? =
+            if (floatType != null) ReceiptFloatType(floatType) else null
     }
 }

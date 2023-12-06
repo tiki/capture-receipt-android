@@ -9,13 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
 import com.microblink.core.Timberland
@@ -24,7 +19,6 @@ import com.microblink.linking.AccountLinkingException
 import com.microblink.linking.BlinkReceiptLinkingSdk
 import com.microblink.linking.PasswordCredentials
 import com.microblink.linking.VERIFICATION_NEEDED
-import com.mytiki.sdk.capture.receipt.capacitor.R
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import kotlinx.coroutines.CompletableDeferred

@@ -14,7 +14,7 @@ import org.json.JSONObject
  *
  * @param survey The [Survey] object containing survey data.
  */
-class CaptureSurvey(survey: Survey) {
+class ReceiptSurvey(survey: Survey) {
 
     /**
      * The client's user ID for the survey.
@@ -49,7 +49,7 @@ class CaptureSurvey(survey: Survey) {
     /**
      * The list of survey questions.
      */
-    private val questions: List<CaptureSurveyQuestion>
+    private val questions: List<ReceiptSurveyQuestion>
 
     init {
         clientUserId = survey.clientUserId()
@@ -59,7 +59,7 @@ class CaptureSurvey(survey: Survey) {
         startDate = survey.startDate()
         endDate = survey.endDate()
         questions =
-            survey.questions()?.map { question -> CaptureSurveyQuestion(question) } ?: emptyList()
+            survey.questions()?.map { question -> ReceiptSurveyQuestion(question) } ?: emptyList()
     }
 
     /**
@@ -85,7 +85,7 @@ class CaptureSurvey(survey: Survey) {
          * @param survey The [Survey] object to convert.
          * @return An [Survey] object representing the survey response, or `null` if the input is `null`.
          */
-        fun opt(survey: Survey?): CaptureSurvey? =
-            if (survey != null) CaptureSurvey(survey) else null
+        fun opt(survey: Survey?): ReceiptSurvey? =
+            if (survey != null) ReceiptSurvey(survey) else null
     }
 }

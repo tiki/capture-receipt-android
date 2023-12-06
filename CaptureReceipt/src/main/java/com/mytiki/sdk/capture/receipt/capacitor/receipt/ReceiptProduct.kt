@@ -27,16 +27,16 @@ import org.json.JSONObject
  * @property size The product size, if available.
  * @property rewardsGroup The rewards group associated with the product, if available.
  * @property competitorRewardsGroup The competitor's rewards group, if available.
- * @property upc The Universal Product Code (UPC) of the product, if available.
+ * @property upc The Universal ReceiptProduct Code (UPC) of the product, if available.
  * @property imageUrl The URL of the product image, if available.
  * @property shippingStatus The shipping status of the product, if available.
- * @property captureAdditionalLines Additional lines of text associated with the product.
+ * @property receiptAditionalLines Additional lines of text associated with the product.
  * @property priceAfterCoupons The product price after applying coupons, if available.
  * @property voided Indicates whether the product is voided.
  * @property probability The probability score associated with the product.
  * @property sensitive Indicates whether the product is sensitive.
- * @property possibleProducts List of possible sub-products associated with the product.
- * @property subProducts List of sub-products associated with the product.
+ * @property possibleReceiptProducts List of possible sub-products associated with the product.
+ * @property subReceiptProducts List of sub-products associated with the product.
  * @property added Indicates whether the product was added.
  * @property blinkReceiptBrand The brand information from the BlinkReceipt SDK, if available.
  * @property blinkReceiptCategory The category information from the BlinkReceipt SDK, if available.
@@ -53,14 +53,14 @@ import org.json.JSONObject
  * @property subCategory The sub-category of the product, if available.
  * @property itemType The item type of the product, if available.
  */
-class Product(product: Product) {
-    private val productNumber: CaptureStringType?
-    private val description: CaptureStringType?
-    private val quantity: CaptureFloatType?
-    private val unitPrice: CaptureFloatType?
-    private val unitOfMeasure: CaptureStringType?
-    private val totalPrice: CaptureFloatType?
-    private val fullPrice: CaptureFloatType
+class ReceiptProduct(product: Product) {
+    private val productNumber: ReceiptStringType?
+    private val description: ReceiptStringType?
+    private val quantity: ReceiptFloatType?
+    private val unitPrice: ReceiptFloatType?
+    private val unitOfMeasure: ReceiptStringType?
+    private val totalPrice: ReceiptFloatType?
+    private val fullPrice: ReceiptFloatType
     private val line: Int
     private val productName: String?
     private val brand: String?
@@ -71,22 +71,22 @@ class Product(product: Product) {
     private val upc: String?
     private val imageUrl: String?
     private val shippingStatus: String?
-    private val captureAdditionalLines: List<CaptureAdditionalLine>
-    private val priceAfterCoupons: CaptureFloatType?
+    private val receiptAditionalLines: List<ReceiptAditionalLine>
+    private val priceAfterCoupons: ReceiptFloatType?
     private val voided: Boolean
     private val probability: Double
     private val sensitive: Boolean
-    private val possibleProducts: List<com.mytiki.sdk.capture.receipt.capacitor.receipt.Product>
-    private val subProducts: List<com.mytiki.sdk.capture.receipt.capacitor.receipt.Product>
+    private val possibleReceiptProducts: List<ReceiptProduct>
+    private val subReceiptProducts: List<ReceiptProduct>
     private val added: Boolean
     private val blinkReceiptBrand: String?
     private val blinkReceiptCategory: String?
     private val extendedFields: JSONObject?
     private val fuelType: String?
-    private val descriptionPrefix: CaptureStringType?
-    private val descriptionPostfix: CaptureStringType?
-    private val skuPrefix: CaptureStringType?
-    private val skuPostfix: CaptureStringType?
+    private val descriptionPrefix: ReceiptStringType?
+    private val descriptionPostfix: ReceiptStringType?
+    private val skuPrefix: ReceiptStringType?
+    private val skuPostfix: ReceiptStringType?
     private val attributes: List<JSONObject>
     private val sector: String?
     private val department: String?
@@ -95,13 +95,13 @@ class Product(product: Product) {
     private val itemType: String?
 
     init {
-        productNumber = CaptureStringType.opt(product.productNumber())
-        description = CaptureStringType.opt(product.description())
-        quantity = CaptureFloatType.opt(product.quantity())
-        unitPrice = CaptureFloatType.opt(product.unitPrice())
-        unitOfMeasure = CaptureStringType.opt(product.unitOfMeasure())
-        totalPrice = CaptureFloatType.opt(product.totalPrice())
-        fullPrice = CaptureFloatType(FloatType(product.fullPrice()))
+        productNumber = ReceiptStringType.opt(product.productNumber())
+        description = ReceiptStringType.opt(product.description())
+        quantity = ReceiptFloatType.opt(product.quantity())
+        unitPrice = ReceiptFloatType.opt(product.unitPrice())
+        unitOfMeasure = ReceiptStringType.opt(product.unitOfMeasure())
+        totalPrice = ReceiptFloatType.opt(product.totalPrice())
+        fullPrice = ReceiptFloatType(FloatType(product.fullPrice()))
         line = product.line()
         productName = product.productName()
         brand = product.brand()
@@ -112,23 +112,26 @@ class Product(product: Product) {
         upc = product.upc()
         imageUrl = product.imageUrl()
         shippingStatus = product.shippingStatus()
-        captureAdditionalLines =
-            product.additionalLines()?.map { additionalLine -> CaptureAdditionalLine(additionalLine) }
+        receiptAditionalLines =
+            product.additionalLines()
+                ?.map { additionalLine -> ReceiptAditionalLine(additionalLine) }
                 ?: emptyList()
-        priceAfterCoupons = CaptureFloatType.opt(product.priceAfterCoupons())
+        priceAfterCoupons = ReceiptFloatType.opt(product.priceAfterCoupons())
         voided = product.voided()
         probability = product.probability()
         sensitive = product.sensitive()
-        possibleProducts = product.possibleProducts()?.map { prd -> Product(prd) } ?: emptyList()
-        subProducts = product.subProducts()?.map { prd -> Product(prd) } ?: emptyList()
+        possibleReceiptProducts =
+            product.possibleProducts()?.map { prd -> ReceiptProduct(prd) } ?: emptyList()
+        subReceiptProducts =
+            product.subProducts()?.map { prd -> ReceiptProduct(prd) } ?: emptyList()
         added = product.added()
         blinkReceiptBrand = product.blinkReceiptBrand()
         blinkReceiptCategory = product.blinkReceiptCategory()
         fuelType = product.fuelType()
-        descriptionPrefix = CaptureStringType.opt(product.descriptionPrefix())
-        descriptionPostfix = CaptureStringType.opt(product.skuPostfix())
-        skuPrefix = CaptureStringType.opt(product.skuPrefix())
-        skuPostfix = CaptureStringType.opt(product.skuPostfix())
+        descriptionPrefix = ReceiptStringType.opt(product.descriptionPrefix())
+        descriptionPostfix = ReceiptStringType.opt(product.skuPostfix())
+        skuPrefix = ReceiptStringType.opt(product.skuPrefix())
+        skuPostfix = ReceiptStringType.opt(product.skuPostfix())
         sector = product.sector()
         department = product.department()
         majorCategory = product.majorCategory()
@@ -173,13 +176,19 @@ class Product(product: Product) {
             .put("upc", upc)
             .put("imageUrl", imageUrl)
             .put("shippingStatus", shippingStatus)
-            .put("captureAdditionalLines", JSONArray(captureAdditionalLines.map { line -> line.toJS() }))
+            .put(
+                "receiptAditionalLines",
+                JSONArray(receiptAditionalLines.map { line -> line.toJS() })
+            )
             .put("priceAfterCoupons", priceAfterCoupons?.toJS())
             .put("voided", voided)
             .put("probability", probability)
             .put("sensitive", sensitive)
-            .put("possibleProducts", JSONArray(possibleProducts.map { prd -> prd.toJS() }))
-            .put("subProducts", JSONArray(subProducts.map { prd -> prd.toJS() }))
+            .put(
+                "possibleReceiptProducts",
+                JSONArray(possibleReceiptProducts.map { prd -> prd.toJS() })
+            )
+            .put("subReceiptProducts", JSONArray(subReceiptProducts.map { prd -> prd.toJS() }))
             .put("added", added)
             .put("blinkReceiptBrand", blinkReceiptBrand)
             .put("blinkReceiptCategory", blinkReceiptCategory)
@@ -203,7 +212,7 @@ class Product(product: Product) {
          * @param product The [Product] instance to create an [Product] from.
          * @return An [Product] instance or null if the input is null.
          */
-        fun opt(product: Product?): com.mytiki.sdk.capture.receipt.capacitor.receipt.Product? =
-            if (product != null) Product(product) else null
+        fun opt(product: Product?): com.mytiki.sdk.capture.receipt.capacitor.receipt.ReceiptProduct? =
+            if (product != null) ReceiptProduct(product) else null
     }
 }

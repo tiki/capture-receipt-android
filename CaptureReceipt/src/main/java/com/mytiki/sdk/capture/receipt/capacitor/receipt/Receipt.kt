@@ -17,33 +17,33 @@ import org.json.JSONObject
  *
  * @param scanResults The scan results containing the data to populate this receipt.
  */
-class Receipt(scanResults: ScanResults){
+class Receipt(scanResults: ScanResults) {
 
-    private val receiptDate: CaptureStringType?
-    private val receiptTime: CaptureStringType?
-    private val retailerId: RetailerReceipt
-    private val products: List<Product>
-    private val coupons: List<Coupon>
-    private val total: CaptureFloatType?
-    private val tip: CaptureFloatType?
-    private val subtotal: CaptureFloatType?
-    private val taxes: CaptureFloatType?
-    private val storeNumber: CaptureStringType?
-    private val merchantName: CaptureStringType?
-    private val storeAddress: CaptureStringType?
-    private val storeCity: CaptureStringType?
+    private val receiptDate: ReceiptStringType?
+    private val receiptTime: ReceiptStringType?
+    private val retailerId: ReceiptRetailer
+    private val receiptProducts: List<ReceiptProduct>
+    private val receiptCoupons: List<ReceiptCoupon>
+    private val total: ReceiptFloatType?
+    private val tip: ReceiptFloatType?
+    private val subtotal: ReceiptFloatType?
+    private val taxes: ReceiptFloatType?
+    private val storeNumber: ReceiptStringType?
+    private val merchantName: ReceiptStringType?
+    private val storeAddress: ReceiptStringType?
+    private val storeCity: ReceiptStringType?
     private val blinkReceiptId: String?
-    private val storeState: CaptureStringType?
-    private val storeZip: CaptureStringType?
-    private val storeCountry: CaptureStringType?
-    private val storePhone: CaptureStringType?
-    private val cashierId: CaptureStringType?
-    private val transactionId: CaptureStringType?
-    private val registerId: CaptureStringType?
-    private val paymentMethods: List<PaymentMethod>
-    private val taxId: CaptureStringType?
-    private val mallName: CaptureStringType?
-    private val last4cc: CaptureStringType?
+    private val storeState: ReceiptStringType?
+    private val storeZip: ReceiptStringType?
+    private val storeCountry: ReceiptStringType?
+    private val storePhone: ReceiptStringType?
+    private val cashierId: ReceiptStringType?
+    private val transactionId: ReceiptStringType?
+    private val registerId: ReceiptStringType?
+    private val receiptPaymentMethods: List<ReceiptPaymentMethod>
+    private val taxId: ReceiptStringType?
+    private val mallName: ReceiptStringType?
+    private val last4cc: ReceiptStringType?
     private val ocrConfidence: Float
     private val merchantSource: String?
     private val foundTopEdge: Boolean
@@ -52,8 +52,8 @@ class Receipt(scanResults: ScanResults){
     private val eReceiptOrderStatus: String?
     private val eReceiptRawHtml: String?
     private val eReceiptShippingAddress: String?
-    private val shipments: List<CaptureShipment>
-    private val longTransactionId: CaptureStringType?
+    private val shipments: List<ReceiptShipment>
+    private val longTransactionId: ReceiptStringType?
     private val subtotalMatches: Boolean
     private val eReceiptEmailProvider: String?
     private val eReceiptEmailId: String?
@@ -65,62 +65,65 @@ class Receipt(scanResults: ScanResults){
     private val fraudulent: Boolean
     private val receiptDateTime: Long?
     private val duplicateBlinkReceiptIds: List<String>
-    private val merchantMatchGuess: CaptureStringType?
+    private val merchantMatchGuess: ReceiptStringType?
     private val productsPendingLookup: Int
-    private val qualifiedPromotions: List<CapturePromotion>
-    private val unqualifiedPromotions: List<CapturePromotion>
+    private val qualifiedPromotions: List<ReceiptPromotion>
+    private val unqualifiedPromotions: List<ReceiptPromotion>
     private val extendedFields: JSONObject?
     private val eReceiptAdditionalFees: JSONObject?
-    private val purchaseType: CaptureStringType?
+    private val purchaseType: ReceiptStringType?
     private val loyaltyForBanner: Boolean
-    private val channel: CaptureStringType?
+    private val channel: ReceiptStringType?
     private val submissionDate: Long?
     private val eReceiptFulfilledBy: String?
     private val eReceiptShippingStatus: String?
     private val eReceiptPOSSystem: String?
     private val eReceiptSubMerchant: String?
-    private val qualifiedSurveys: List<CaptureSurvey>
+    private val qualifiedSurveys: List<ReceiptSurvey>
     private val barcode: String?
     private val eReceiptMerchantEmail: String?
     private val eReceiptEmailSubject: String?
     private val eReceiptShippingCosts: Float
     private val currencyCode: String?
-    private val clientMerchantName: CaptureStringType?
+    private val clientMerchantName: ReceiptStringType?
     private val loyaltyProgram: Boolean
     private val merchantSources: List<Int>
-    private val paymentTerminalId: CaptureStringType?
-    private val paymentTransactionId: CaptureStringType?
-    private val combinedRawText: CaptureStringType?
+    private val paymentTerminalId: ReceiptStringType?
+    private val paymentTransactionId: ReceiptStringType?
+    private val combinedRawText: ReceiptStringType?
 
     init {
         // Initialize properties with data from scanResults
-        receiptDate = CaptureStringType.opt(scanResults.receiptDate())
-        receiptTime = CaptureStringType.opt(scanResults.receiptTime())
-        retailerId = RetailerReceipt(scanResults.retailerId())
-        products = scanResults.products()?.map { product -> Product(product) } ?: emptyList()
-        coupons = scanResults.coupons()?.map { coupon -> Coupon(coupon) } ?: emptyList()
-        total = CaptureFloatType.opt(scanResults.total())
-        tip = CaptureFloatType.opt(scanResults.tip())
-        subtotal = CaptureFloatType.opt(scanResults.subtotal())
-        taxes = CaptureFloatType.opt(scanResults.taxes())
-        storeNumber = CaptureStringType.opt(scanResults.storeNumber())
-        merchantName = CaptureStringType.opt(scanResults.merchantName())
-        storeAddress = CaptureStringType.opt(scanResults.storeAddress())
-        storeCity = CaptureStringType.opt(scanResults.storeCity())
+        receiptDate = ReceiptStringType.opt(scanResults.receiptDate())
+        receiptTime = ReceiptStringType.opt(scanResults.receiptTime())
+        retailerId = ReceiptRetailer(scanResults.retailerId())
+        receiptProducts =
+            scanResults.products()?.map { product -> ReceiptProduct(product) } ?: emptyList()
+        receiptCoupons =
+            scanResults.coupons()?.map { coupon -> ReceiptCoupon(coupon) } ?: emptyList()
+        total = ReceiptFloatType.opt(scanResults.total())
+        tip = ReceiptFloatType.opt(scanResults.tip())
+        subtotal = ReceiptFloatType.opt(scanResults.subtotal())
+        taxes = ReceiptFloatType.opt(scanResults.taxes())
+        storeNumber = ReceiptStringType.opt(scanResults.storeNumber())
+        merchantName = ReceiptStringType.opt(scanResults.merchantName())
+        storeAddress = ReceiptStringType.opt(scanResults.storeAddress())
+        storeCity = ReceiptStringType.opt(scanResults.storeCity())
         blinkReceiptId = scanResults.blinkReceiptId()
-        storeState = CaptureStringType.opt(scanResults.storeState())
-        storeZip = CaptureStringType.opt(scanResults.storeZip())
-        storeCountry = CaptureStringType.opt(scanResults.storeCountry())
-        storePhone = CaptureStringType.opt(scanResults.storePhone())
-        cashierId = CaptureStringType.opt(scanResults.cashierId())
-        transactionId = CaptureStringType.opt(scanResults.transactionId())
-        registerId = CaptureStringType.opt(scanResults.registerId())
-        paymentMethods =
-            scanResults.paymentMethods()?.map { paymentMethod -> PaymentMethod(paymentMethod) }
+        storeState = ReceiptStringType.opt(scanResults.storeState())
+        storeZip = ReceiptStringType.opt(scanResults.storeZip())
+        storeCountry = ReceiptStringType.opt(scanResults.storeCountry())
+        storePhone = ReceiptStringType.opt(scanResults.storePhone())
+        cashierId = ReceiptStringType.opt(scanResults.cashierId())
+        transactionId = ReceiptStringType.opt(scanResults.transactionId())
+        registerId = ReceiptStringType.opt(scanResults.registerId())
+        receiptPaymentMethods =
+            scanResults.paymentMethods()
+                ?.map { paymentMethod -> ReceiptPaymentMethod(paymentMethod) }
                 ?: emptyList()
-        taxId = CaptureStringType.opt(scanResults.taxId())
-        mallName = CaptureStringType.opt(scanResults.mallName())
-        last4cc = CaptureStringType.opt(scanResults.last4cc())
+        taxId = ReceiptStringType.opt(scanResults.taxId())
+        mallName = ReceiptStringType.opt(scanResults.mallName())
+        last4cc = ReceiptStringType.opt(scanResults.last4cc())
         ocrConfidence = scanResults.ocrConfidence()
         merchantSource = scanResults.merchantSource()
         foundTopEdge = scanResults.foundTopEdge()
@@ -130,8 +133,8 @@ class Receipt(scanResults: ScanResults){
         eReceiptRawHtml = scanResults.eReceiptRawHtml()
         eReceiptShippingAddress = scanResults.eReceiptShippingAddress()
         shipments =
-            scanResults.shipments()?.map { shipment -> CaptureShipment(shipment) } ?: emptyList()
-        longTransactionId = CaptureStringType.opt(scanResults.longTransactionId())
+            scanResults.shipments()?.map { shipment -> ReceiptShipment(shipment) } ?: emptyList()
+        longTransactionId = ReceiptStringType.opt(scanResults.longTransactionId())
         subtotalMatches = scanResults.subtotalMatches()
         eReceiptEmailProvider = scanResults.eReceiptEmailProvider()
         eReceiptEmailId = scanResults.eReceiptEmailId()
@@ -145,12 +148,13 @@ class Receipt(scanResults: ScanResults){
         fraudulent = scanResults.fraudulent()
         receiptDateTime = scanResults.receiptDateTime()?.time
         duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds() ?: emptyList()
-        merchantMatchGuess = CaptureStringType.opt(scanResults.merchantMatchGuess())
+        merchantMatchGuess = ReceiptStringType.opt(scanResults.merchantMatchGuess())
         productsPendingLookup = scanResults.productsPendingLookup()
         qualifiedPromotions =
-            scanResults.qualified()?.map { promotion -> CapturePromotion(promotion) } ?: emptyList()
+            scanResults.qualified()?.map { promotion -> ReceiptPromotion(promotion) } ?: emptyList()
         unqualifiedPromotions =
-            scanResults.unqualified()?.map { promotion -> CapturePromotion(promotion) } ?: emptyList()
+            scanResults.unqualified()?.map { promotion -> ReceiptPromotion(promotion) }
+                ?: emptyList()
         extendedFields = if (scanResults.extendedFields() != null) {
             val extendedFields = JSONObject()
             scanResults.extendedFields()
@@ -163,27 +167,27 @@ class Receipt(scanResults: ScanResults){
                 ?.forEach { entry -> additionalFees.put(entry.key, entry.value) }
             additionalFees
         } else null
-        purchaseType = CaptureStringType.opt(scanResults.purchaseType())
+        purchaseType = ReceiptStringType.opt(scanResults.purchaseType())
         loyaltyForBanner = scanResults.loyaltyForBanner()
-        channel = CaptureStringType.opt(scanResults.channel())
+        channel = ReceiptStringType.opt(scanResults.channel())
         submissionDate = scanResults.submissionDate()?.time
         eReceiptFulfilledBy = scanResults.eReceiptFulfilledBy()
         eReceiptShippingStatus = scanResults.eReceiptShippingStatus()
         eReceiptPOSSystem = scanResults.eReceiptPOSSystem()
         eReceiptSubMerchant = scanResults.eReceiptSubMerchant()
         qualifiedSurveys =
-            scanResults.qualifiedSurveys()?.map { survey -> CaptureSurvey(survey) } ?: emptyList()
+            scanResults.qualifiedSurveys()?.map { survey -> ReceiptSurvey(survey) } ?: emptyList()
         barcode = scanResults.barcode()
         eReceiptMerchantEmail = scanResults.eReceiptMerchantEmail()
         eReceiptEmailSubject = scanResults.eReceiptEmailSubject()
         eReceiptShippingCosts = scanResults.eReceiptShippingCosts()
         currencyCode = scanResults.currencyCode()
-        clientMerchantName = CaptureStringType.opt(StringType(scanResults.clientMerchantName()))
+        clientMerchantName = ReceiptStringType.opt(StringType(scanResults.clientMerchantName()))
         loyaltyProgram = scanResults.loyaltyProgram()
         merchantSources = scanResults.merchantSources() ?: emptyList()
-        paymentTerminalId = CaptureStringType.opt(scanResults.paymentTerminalId())
-        paymentTransactionId = CaptureStringType.opt(scanResults.paymentTransactionId())
-        combinedRawText = CaptureStringType.opt(scanResults.combinedRawText())
+        paymentTerminalId = ReceiptStringType.opt(scanResults.paymentTerminalId())
+        paymentTransactionId = ReceiptStringType.opt(scanResults.paymentTransactionId())
+        combinedRawText = ReceiptStringType.opt(scanResults.combinedRawText())
     }
 
     /**
@@ -191,12 +195,12 @@ class Receipt(scanResults: ScanResults){
      *
      * @return A JSONObject containing the RSP receipt data.
      */
-   fun toJS(): JSONObject = JSONObject()
+    fun toJS(): JSONObject = JSONObject()
         .put("receiptDate", receiptDate?.toJS())
         .put("receiptTime", receiptTime?.toJS())
         .put("retailerId", retailerId.toJS())
-        .put("products", JSONArray(products.map { prd -> prd.toJS() }))
-        .put("coupons", JSONArray(coupons.map { coupon -> coupon.toJS() }))
+        .put("receiptProducts", JSONArray(receiptProducts.map { prd -> prd.toJS() }))
+        .put("receiptCoupons", JSONArray(receiptCoupons.map { coupon -> coupon.toJS() }))
         .put("total", total?.toJS())
         .put("tip", tip?.toJS())
         .put("subtotal", subtotal?.toJS())
@@ -213,7 +217,10 @@ class Receipt(scanResults: ScanResults){
         .put("cashierId", cashierId?.toJS())
         .put("transactionId", transactionId?.toJS())
         .put("registerId", registerId?.toJS())
-        .put("paymentMethods", JSONArray(paymentMethods.map { method -> method.toJS() }))
+        .put(
+            "receiptPaymentMethods",
+            JSONArray(receiptPaymentMethods.map { method -> method.toJS() })
+        )
         .put("taxId", taxId?.toJS())
         .put("mallName", mallName?.toJS())
         .put("last4cc", last4cc?.toJS())

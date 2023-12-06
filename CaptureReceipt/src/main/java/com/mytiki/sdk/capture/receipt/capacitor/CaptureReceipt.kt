@@ -33,6 +33,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "tiki-capture-receipt")
+
 /**
  * The CaptureReceipt object provides methods to interact with the TIKI Capture Receipt SDK.
  */
@@ -48,9 +49,8 @@ object CaptureReceipt {
     private val physical: Physical = Physical()
 
 
-
     fun config(config: Configuration, onError: (Throwable) -> Unit) {
-        if (config.tikiPublishingID.isBlank()){
+        if (config.tikiPublishingID.isBlank()) {
             onError(Exception("tikiPublishingID cannot be blank"))
         } else if (config.microblinkLicenseKey.isBlank()) {
             onError(Exception("microblinkLicenseKey cannot be blank"))
@@ -119,7 +119,7 @@ object CaptureReceipt {
                 )
             }
         } else {
-            onException (Exception("Please pass the configuration object through CaptureReceipt.config() before initialize the SDK"))
+            onException(Exception("Please pass the configuration object through CaptureReceipt.config() before initialize the SDK"))
         }
     }
 
@@ -163,10 +163,20 @@ object CaptureReceipt {
         onSuccess: (Account) -> Unit,
         onError: (String) -> Unit
     ) {
-        if (accountType.type == AccountTypeEnum.EMAIL){
-            email.login(username, password, accountType.id, activity.supportFragmentManager, {onSuccess(it)}){onError(it)}
+        if (accountType.type == AccountTypeEnum.EMAIL) {
+            email.login(
+                username,
+                password,
+                accountType.id,
+                activity.supportFragmentManager,
+                { onSuccess(it) }) { onError(it) }
         } else {
-            retailer.login(username, password, accountType.id, activity, {onSuccess(it)}){onError(it)}
+            retailer.login(
+                username,
+                password,
+                accountType.id,
+                activity,
+                { onSuccess(it) }) { onError(it) }
         }
     }
 
@@ -175,14 +185,23 @@ object CaptureReceipt {
      *
      * @return A list of connected accounts.
      */
-    fun accounts(context: Context, onError: (msg: String) -> Unit): CompletableDeferred<List<Account>> {
+    fun accounts(
+        context: Context,
+        onError: (msg: String) -> Unit
+    ): CompletableDeferred<List<Account>> {
         val accountsList = mutableListOf<Account>()
         val accountsDeferred = CompletableDeferred<List<Account>>()
         val emailDeferred = CompletableDeferred<Unit>()
         val retailerDeferred = CompletableDeferred<Unit>()
         MainScope().async {
-            email.accounts(context, { accountsList.add(it) }, { onError(it) }){emailDeferred.complete(Unit)}
-            retailer.accounts(context, { accountsList.add(it) }, { onError(it) }) {retailerDeferred.complete(Unit)}
+            email.accounts(
+                context,
+                { accountsList.add(it) },
+                { onError(it) }) { emailDeferred.complete(Unit) }
+            retailer.accounts(
+                context,
+                { accountsList.add(it) },
+                { onError(it) }) { retailerDeferred.complete(Unit) }
             awaitAll(emailDeferred, retailerDeferred)
             accountsDeferred.complete(accountsList)
         }
@@ -205,10 +224,10 @@ object CaptureReceipt {
         onError: (String) -> Unit
     ) {
         val account = Account(accountCommon, username)
-        if (accountCommon.type == AccountTypeEnum.EMAIL){
-            email.logout(context, account, onSuccess){onError(it)}
+        if (accountCommon.type == AccountTypeEnum.EMAIL) {
+            email.logout(context, account, onSuccess) { onError(it) }
         } else {
-            retailer.logout(context, account, onSuccess){onError(it)}
+            retailer.logout(context, account, onSuccess) { onError(it) }
         }
 
     }
@@ -218,9 +237,10 @@ object CaptureReceipt {
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
-        email.flush(context, onSuccess){onError(it)}
-        retailer.flush(context, onSuccess){onError(it)}
+        email.flush(context, onSuccess) { onError(it) }
+        retailer.flush(context, onSuccess) { onError(it) }
     }
+
     /**
      * Retrieve digital receipt data for a specific account type.
      *
@@ -244,7 +264,7 @@ object CaptureReceipt {
         onError: (String) -> Unit,
         onComplete: () -> Unit
     ) {
-        if (accountCommon.type == AccountTypeEnum.EMAIL){
+        if (accountCommon.type == AccountTypeEnum.EMAIL) {
             email.scrape(context, onReceipt, onError, onComplete)
         } else {
             retailer.orders(context, onReceipt, onError, onComplete)
@@ -273,7 +293,7 @@ object CaptureReceipt {
         onError: (String) -> Unit,
         onComplete: () -> Unit
     ) {
-        if (account.accountCommon.type == AccountTypeEnum.EMAIL){
+        if (account.accountCommon.type == AccountTypeEnum.EMAIL) {
             email.scrape(context, account, onReceipt, onError, onComplete)
         } else {
             retailer.orders(context, account, onReceipt, onError, onComplete)
