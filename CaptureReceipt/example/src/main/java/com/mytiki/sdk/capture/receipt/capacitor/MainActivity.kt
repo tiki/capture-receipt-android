@@ -21,9 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.mytiki.capture.receipt.Configuration
+import com.mytiki.capture.receipt.account.Account
+import com.mytiki.capture.receipt.account.AccountCommon
 import com.mytiki.capture_receipt.example.Input
-import com.mytiki.sdk.capture.receipt.capacitor.account.Account
-import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import com.mytiki.sdk.capture.receipt.capacitor.ui.theme.CaptureReceiptTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -62,8 +63,8 @@ class MainActivity : AppCompatActivity() {
             }
 
 
-            CaptureReceipt.config(config) { onError(it) }
-            CaptureReceipt.initialize(
+            com.mytiki.capture.receipt.CaptureReceipt.config(config) { onError(it) }
+            com.mytiki.capture.receipt.CaptureReceipt.initialize(
                 UUID.randomUUID().toString(),
                 this@MainActivity
             ) { onError(it) }
@@ -115,14 +116,14 @@ class MainActivity : AppCompatActivity() {
                             errorOutput = ""
                             loginOutput = ""
                             accountsOutput = ""
-                            CaptureReceipt.scan(this@MainActivity)
+                            com.mytiki.capture.receipt.CaptureReceipt.scan(this@MainActivity)
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Login Email") {
                             errorOutput = ""
                             loginOutput = ""
                             accountsOutput = ""
-                            CaptureReceipt.login(
+                            com.mytiki.capture.receipt.CaptureReceipt.login(
                                 this@MainActivity,
                                 username,
                                 password,
@@ -136,7 +137,7 @@ class MainActivity : AppCompatActivity() {
                             errorOutput = ""
                             loginOutput = ""
                             accountsOutput = ""
-                            CaptureReceipt.login(
+                            com.mytiki.capture.receipt.CaptureReceipt.login(
                                 this@MainActivity,
                                 username,
                                 password,
@@ -160,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                         MainButton(text = "Accounts") {
                             MainScope().async {
                                 val list =
-                                    CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }
+                                    com.mytiki.capture.receipt.CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }
                                         .await()
                                 accountsOutput =
                                     list.map { it.username to it.accountCommon.name }.toString()
@@ -180,7 +181,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         MainButton(text = "Get Receipts accounts Gmail") {
-                            CaptureReceipt.scrape(
+                            com.mytiki.capture.receipt.CaptureReceipt.scrape(
                                 this@MainActivity,
                                 Account(AccountCommon.GMAIL, username),
                                 {
@@ -192,7 +193,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Get Receipts accounts Amazon") {
-                            CaptureReceipt.scrape(
+                            com.mytiki.capture.receipt.CaptureReceipt.scrape(
                                 this@MainActivity,
                                 Account(AccountCommon.AMAZON, username),
                                 {
@@ -204,7 +205,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Get Receipts Amazon") {
-                            CaptureReceipt.scrape(
+                            com.mytiki.capture.receipt.CaptureReceipt.scrape(
                                 this@MainActivity,
                                 AccountCommon.AMAZON,
                                 {
@@ -216,7 +217,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Get Receipts Gmail") {
-                            CaptureReceipt.scrape(
+                            com.mytiki.capture.receipt.CaptureReceipt.scrape(
                                 this@MainActivity,
                                 AccountCommon.GMAIL,
                                 {
@@ -228,7 +229,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Get All Receipts") {
-                            CaptureReceipt.scrape(
+                            com.mytiki.capture.receipt.CaptureReceipt.scrape(
                                 this@MainActivity,
                                 {
                                     receiptsOutput = "${it?.toJS()}"
@@ -240,7 +241,7 @@ class MainActivity : AppCompatActivity() {
 
                         Spacer(modifier = Modifier.height(60.dp))
                         MainButton(text = "Logout Gmail") {
-                            CaptureReceipt.logout(
+                            com.mytiki.capture.receipt.CaptureReceipt.logout(
                                 this@MainActivity,
                                 username,
                                 AccountCommon.GMAIL,
@@ -248,7 +249,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Logout Amazon") {
-                            CaptureReceipt.logout(
+                            com.mytiki.capture.receipt.CaptureReceipt.logout(
                                 this@MainActivity,
                                 username,
                                 AccountCommon.AMAZON,
@@ -256,7 +257,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Flush") {
-                            CaptureReceipt.logout(
+                            com.mytiki.capture.receipt.CaptureReceipt.logout(
                                 this@MainActivity,
                                 { loginOutput = "worked" }) { errorOutput = it }
                         }
