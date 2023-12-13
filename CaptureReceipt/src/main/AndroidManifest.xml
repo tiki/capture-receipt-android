@@ -5,11 +5,11 @@
 
     <application>
         <activity
-            android:name="com.mytiki.sdk.capture.receipt.physical.PhysicalActivity"
+            android:name="com.mytiki.capture.receipt.physical.PhysicalActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name="com.mytiki.sdk.capture.receipt.retailer.RetailerActivity"
+            android:name="com.mytiki.capture.receipt.retailer.RetailerActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
