@@ -46,9 +46,9 @@ object CaptureReceipt {
     private var userId: String? = null
     private var title: TitleRecord? = null
 
-    private val email: Email = Email()
-    private val retailer: Retailer = Retailer()
-    private val physical: Physical = Physical()
+    val email: Email = Email()
+    val retailer: Retailer = Retailer()
+    val physical: Physical = Physical()
 
 
     fun config(config: com.mytiki.capture.receipt.Configuration, onError: (Throwable) -> Unit) {
@@ -61,7 +61,7 @@ object CaptureReceipt {
         } else if (config.terms.isBlank()) {
             onError(Exception("terms cannot be blank"))
         } else {
-            com.mytiki.capture.receipt.CaptureReceipt.configuration = config
+            configuration = config
         }
     }
 
@@ -72,40 +72,40 @@ object CaptureReceipt {
      * @param options Configuration options for the SDK.
      */
     fun initialize(userId: String, context: Context, onException: (Throwable) -> Unit) {
-        if (com.mytiki.capture.receipt.CaptureReceipt.configuration != null) {
+        if (configuration != null) {
 
             com.mytiki.capture.receipt.CaptureReceipt.email.initialize(
                 context,
-                com.mytiki.capture.receipt.CaptureReceipt.configuration!!.microblinkLicenseKey,
-                com.mytiki.capture.receipt.CaptureReceipt.configuration!!.productIntelligenceKey,
-                com.mytiki.capture.receipt.CaptureReceipt.configuration!!.gmailAPIKey,
-                com.mytiki.capture.receipt.CaptureReceipt.configuration!!.outlookAPIKey,
+                configuration!!.microblinkLicenseKey,
+                configuration!!.productIntelligenceKey,
+                configuration!!.gmailAPIKey,
+                configuration!!.outlookAPIKey,
             ) { onException(it) }
             com.mytiki.capture.receipt.CaptureReceipt.retailer.initialize(
                 context,
-                com.mytiki.capture.receipt.CaptureReceipt.configuration!!.microblinkLicenseKey,
-                com.mytiki.capture.receipt.CaptureReceipt.configuration!!.productIntelligenceKey
+                configuration!!.microblinkLicenseKey,
+                configuration!!.productIntelligenceKey
             ) { onException(it) }
             com.mytiki.capture.receipt.CaptureReceipt.physical.initialize(
                 context,
-                com.mytiki.capture.receipt.CaptureReceipt.configuration!!.microblinkLicenseKey,
-                com.mytiki.capture.receipt.CaptureReceipt.configuration!!.productIntelligenceKey
+                configuration!!.microblinkLicenseKey,
+                configuration!!.productIntelligenceKey
             ) { onException(it) }
 
             MainScope().async {
                 val deferredTikiSdk =
-                    TikiSdk.initialize(userId, com.mytiki.capture.receipt.CaptureReceipt.configuration!!.tikiPublishingID, context)
+                    TikiSdk.initialize(userId, configuration!!.tikiPublishingID, context)
                 deferredTikiSdk.await()
 
                 try {
-                    com.mytiki.capture.receipt.CaptureReceipt.title = TikiSdk.trail.title.get(userId).await()
+                    title = TikiSdk.trail.title.get(userId).await()
                 } catch (ex: Exception) {
                     onException(ex)
                 }
 
-                if (com.mytiki.capture.receipt.CaptureReceipt.title == null) {
+                if (title == null) {
                     try {
-                        com.mytiki.capture.receipt.CaptureReceipt.title = TikiSdk.trail.title.create(
+                        title = TikiSdk.trail.title.create(
                             userId,
                             listOf(Tag(TagCommon.PURCHASE_HISTORY))
                         ).await()
@@ -115,9 +115,9 @@ object CaptureReceipt {
                 }
 
                 TikiSdk.trail.license.create(
-                    com.mytiki.capture.receipt.CaptureReceipt.title!!.id,
+                    title!!.id,
                     listOf(Use(listOf(Usecase(UsecaseCommon.ANALYTICS)), listOf("*"))),
-                    com.mytiki.capture.receipt.CaptureReceipt.configuration!!.terms
+                    configuration!!.terms
                 )
             }
         } else {
@@ -140,10 +140,16 @@ object CaptureReceipt {
      * @see Error An example of an Error object.
      */
     @RequiresApi(Build.VERSION_CODES.M)
-    fun scan(
+    suspend fun scan(
         activity: Activity,
-    ) {
-        com.mytiki.capture.receipt.CaptureReceipt.physical.scan(activity)
+    ): CompletableDeferred<Receipt?>{
+        val receipt = CompletableDeferred<Receipt?>()
+        MainScope().async {
+            receipt.complete(
+                physical.scan(activity)
+            )
+        }
+        return receipt
     }
 
 
@@ -166,14 +172,14 @@ object CaptureReceipt {
         onError: (String) -> Unit
     ) {
         if (accountType.type == AccountTypeEnum.EMAIL) {
-            com.mytiki.capture.receipt.CaptureReceipt.email.login(
+            email.login(
                 username,
                 password,
                 accountType.id,
                 activity.supportFragmentManager,
                 { onSuccess(it) }) { onError(it) }
         } else {
-            com.mytiki.capture.receipt.CaptureReceipt.retailer.login(
+            retailer.login(
                 username,
                 password,
                 accountType.id,
@@ -196,11 +202,11 @@ object CaptureReceipt {
         val emailDeferred = CompletableDeferred<Unit>()
         val retailerDeferred = CompletableDeferred<Unit>()
         MainScope().async {
-            com.mytiki.capture.receipt.CaptureReceipt.email.accounts(
+            email.accounts(
                 context,
                 { accountsList.add(it) },
                 { onError(it) }) { emailDeferred.complete(Unit) }
-            com.mytiki.capture.receipt.CaptureReceipt.retailer.accounts(
+            retailer.accounts(
                 context,
                 { accountsList.add(it) },
                 { onError(it) }) { retailerDeferred.complete(Unit) }
@@ -227,9 +233,9 @@ object CaptureReceipt {
     ) {
         val account = Account(accountCommon, username)
         if (accountCommon.type == AccountTypeEnum.EMAIL) {
-            com.mytiki.capture.receipt.CaptureReceipt.email.logout(context, account, onSuccess) { onError(it) }
+            email.logout(context, account, onSuccess) { onError(it) }
         } else {
-            com.mytiki.capture.receipt.CaptureReceipt.retailer.logout(context, account, onSuccess) { onError(it) }
+            retailer.logout(context, account, onSuccess) { onError(it) }
         }
 
     }
@@ -239,8 +245,8 @@ object CaptureReceipt {
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
-        com.mytiki.capture.receipt.CaptureReceipt.email.flush(context, onSuccess) { onError(it) }
-        com.mytiki.capture.receipt.CaptureReceipt.retailer.flush(context, onSuccess) { onError(it) }
+        email.flush(context, onSuccess) { onError(it) }
+        retailer.flush(context, onSuccess) { onError(it) }
     }
 
     /**
@@ -267,9 +273,9 @@ object CaptureReceipt {
         onComplete: () -> Unit
     ) {
         if (accountCommon.type == AccountTypeEnum.EMAIL) {
-            com.mytiki.capture.receipt.CaptureReceipt.email.scrape(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
+            email.scrape(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
         } else {
-            com.mytiki.capture.receipt.CaptureReceipt.retailer.orders(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
+            retailer.orders(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
         }
     }
 
@@ -296,9 +302,9 @@ object CaptureReceipt {
         onComplete: () -> Unit
     ) {
         if (account.accountCommon.type == AccountTypeEnum.EMAIL) {
-            com.mytiki.capture.receipt.CaptureReceipt.email.scrape(context, account, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
+            email.scrape(context, account, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
         } else {
-            com.mytiki.capture.receipt.CaptureReceipt.retailer.orders(context, account, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
+            retailer.orders(context, account, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
         }
     }
 
@@ -324,7 +330,7 @@ object CaptureReceipt {
         onError: (String) -> Unit,
         onComplete: () -> Unit
     ) {
-        com.mytiki.capture.receipt.CaptureReceipt.email.scrape(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
-        com.mytiki.capture.receipt.CaptureReceipt.retailer.orders(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
+        email.scrape(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
+        retailer.orders(context, { ApiService.publishReceipts(it, onReceipt, onError) }, onError, onComplete)
     }
 }

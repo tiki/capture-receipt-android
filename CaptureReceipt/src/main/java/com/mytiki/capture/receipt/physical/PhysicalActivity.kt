@@ -9,6 +9,7 @@ import com.microblink.Media
 import com.microblink.ScanOptions
 import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.ScanResults
+import com.mytiki.capture.receipt.CaptureReceipt
 import com.mytiki.capture.receipt.databinding.PhysicalActivityBinding
 import com.mytiki.capture.receipt.receipt.Receipt
 import com.mytiki.capture.receipt.utils.ApiService
@@ -53,6 +54,7 @@ class PhysicalActivity : AppCompatActivity() {
             val scanResults: ScanResults? = data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
             val media: Media? = data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
             val receipt = Receipt.opt(scanResults)
+            CaptureReceipt.physical.onScan(receipt)
             ApiService.publishReceipts(receipt, {}){
                 throw IOException(it)
             }

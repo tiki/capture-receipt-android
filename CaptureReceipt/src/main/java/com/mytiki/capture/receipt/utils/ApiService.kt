@@ -1,6 +1,7 @@
 package com.mytiki.capture.receipt.utils
 
 import com.mytiki.capture.receipt.receipt.Receipt
+import com.mytiki.tiki_sdk_android.TikiSdk
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -25,6 +26,7 @@ object ApiService {
 
     private fun postRequest(requestBody: RequestBody, path: String) = Request.Builder()
         .url(BASE_URL + path)
+//        .addHeader("token", TikiSdk.idp.token().toString())
         .post(requestBody)
         .build()
 
@@ -41,7 +43,7 @@ object ApiService {
                     }
                     override fun onResponse(call: Call, response: Response) {
                         if (response.code !in 200..299) {
-                            onError("Status: response.code")
+                            onError("Status: ${response.code}")
                         } else {
                             onReceipt(receipt)
                         }

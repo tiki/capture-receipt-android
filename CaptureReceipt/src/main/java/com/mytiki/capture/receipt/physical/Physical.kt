@@ -14,13 +14,19 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.microblink.BlinkReceiptSdk
 import com.microblink.core.InitializeCallback
+import com.mytiki.capture.receipt.receipt.Receipt
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.MainScope
+import java.lang.Exception
 
 
 /**
  * This class provides functionality for scanning physical receipts using Microblink's SDK.
  */
 class Physical {
+
+    private var receipt = CompletableDeferred<Receipt?>()
+
     /**
      * Initializes the Microblink SDK with the provided configuration.
      *
@@ -62,7 +68,8 @@ class Physical {
      * @param reqPermissionsCallback Callback to request camera permissions if needed.
      */
     @RequiresApi(Build.VERSION_CODES.M)
-    fun scan(activity: Activity) {
+    suspend fun scan(activity: Activity): Receipt? {
+        receipt = CompletableDeferred<Receipt?>()
         if (activity.checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_DENIED) {
             val requestPermissionCode = 98734763
             activity.requestPermissions(
@@ -72,7 +79,16 @@ class Physical {
         } else {
             activity.startActivity(Intent(activity, PhysicalActivity::class.java))
         }
+        return receipt.await()
     }
 
-
+    fun onScan(_receipt: Receipt?){
+        if (_receipt != null) {
+            receipt.complete(_receipt)
+        } else {
+            receipt.completeExceptionally(
+                Exception("error scanning the receipt. please try again")
+            )
+        }
+    }
 }
