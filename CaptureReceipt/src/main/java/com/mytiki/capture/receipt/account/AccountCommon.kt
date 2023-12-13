@@ -97,6 +97,8 @@ enum class AccountCommon(val type: AccountTypeEnum, val id: String) {
             return AccountCommon.values().firstOrNull{it.toString() == name}
         }
 
+        fun fromString(name: String) = AccountCommon.values().firstOrNull { it.toString() == name }
+
     }
 
 }
