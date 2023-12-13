@@ -93,9 +93,6 @@ enum class AccountCommon(val type: AccountTypeEnum, val id: String) {
          * @return The matching [AccountCommon] enum entry, or null if not found.
          */
         fun fromSource(id: String) = AccountCommon.values().first { it.id == id }
-        fun fromString(name: String): AccountCommon? {
-            return AccountCommon.values().firstOrNull{it.toString() == name}
-        }
 
         fun fromString(name: String) = AccountCommon.values().firstOrNull { it.toString() == name }
 
