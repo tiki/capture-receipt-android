@@ -193,27 +193,23 @@ object CaptureReceipt {
      *
      * @return A list of connected accounts.
      */
-    fun accounts(
+    suspend fun accounts(
         context: Context,
-        onError: (msg: String) -> Unit
-    ): CompletableDeferred<List<Account>> {
+        onError: (msg: String) -> Unit,
+    ): List<Account> {
         val accountsList = mutableListOf<Account>()
-        val accountsDeferred = CompletableDeferred<List<Account>>()
         val emailDeferred = CompletableDeferred<Unit>()
         val retailerDeferred = CompletableDeferred<Unit>()
-        MainScope().async {
-            email.accounts(
-                context,
-                { accountsList.add(it) },
-                { onError(it) }) { emailDeferred.complete(Unit) }
-            retailer.accounts(
-                context,
-                { accountsList.add(it) },
-                { onError(it) }) { retailerDeferred.complete(Unit) }
-            awaitAll(emailDeferred, retailerDeferred)
-            accountsDeferred.complete(accountsList)
-        }
-        return accountsDeferred
+        email.accounts(
+            context,
+            { accountsList.add(it) },
+            { onError(it) }) { emailDeferred.complete(Unit) }
+        retailer.accounts(
+            context,
+            { accountsList.add(it) },
+            { onError(it) }) { retailerDeferred.complete(Unit) }
+        awaitAll(emailDeferred, retailerDeferred)
+        return accountsList
     }
 
     /**
@@ -239,7 +235,26 @@ object CaptureReceipt {
         }
 
     }
-
+    /**
+     * Log out of an account.
+     *
+     * @param context The Android application context.
+     * @param account The [Account] to log out from.
+     * @param onSuccess A callback function to execute on successful logout.
+     * @param onError A callback function to execute if there is an error during logout.
+     */
+    fun logout(
+        context: Context,
+        account: Account,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        if (account.accountCommon.type == AccountTypeEnum.EMAIL) {
+            email.logout(context, account, onSuccess) { onError(it) }
+        } else {
+            retailer.logout(context, account, onSuccess) { onError(it) }
+        }
+    }
     fun logout(
         context: Context,
         onSuccess: () -> Unit,

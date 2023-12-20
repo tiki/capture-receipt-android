@@ -163,11 +163,9 @@ class MainActivity : AppCompatActivity() {
 
                         MainButton(text = "Accounts") {
                             MainScope().async {
-                                val list =
-                                    CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }
-                                        .await()
-                                accountsOutput =
-                                    list.map { it.username to it.accountCommon.name }.toString()
+                                accountsOutput = CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }
+                                    .map { it.username to it.accountCommon.name }
+                                    .toString()
                             }
                         }
 

@@ -244,19 +244,16 @@ class Email(
                     onComplete?.invoke()
                     client.close()
                 } else {
-                    MainScope().async {
-                        var returnedAccounts = 0
-                        for (credential in credentials) {
-                            val account = Account.fromEmailAccount(credential)
-                            account.isVerified = true
-                            onAccount(account)
-                            returnedAccounts++
-                            if (returnedAccounts == credentials.size) {
-                                onComplete?.invoke()
-                                client.close()
-                            }
+                    var returnedAccounts = 0
+                    for (credential in credentials) {
+                        val account = Account.fromEmailAccount(credential)
+                        account.isVerified = true
+                        onAccount(account)
+                        returnedAccounts++
+                        if (returnedAccounts == credentials.size) {
+                            onComplete?.invoke()
+                            client.close()
                         }
-
                     }
                 }
             }.addOnFailureListener {
