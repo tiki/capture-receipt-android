@@ -6,10 +6,6 @@
 package com.mytiki.capture.receipt.email
 
 import android.content.Context
-import com.microblink.core.ScanResults
-import com.microblink.digital.ImapClient
-
-typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 
 /**
  * Class that handles all email-related logic.
