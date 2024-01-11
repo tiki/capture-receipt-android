@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.2")
+        classpath("com.android.tools.build:gradle:8.2.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10")
     }
@@ -19,7 +19,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mytiki.sdk.capture.receipt.capacitor"
+    namespace = "com.mytiki.capture.receipt"
     compileSdk = 34
 
     buildFeatures {

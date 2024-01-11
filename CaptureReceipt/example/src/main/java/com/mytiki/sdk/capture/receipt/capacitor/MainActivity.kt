@@ -21,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.mytiki.capture.receipt.CaptureReceipt
+import com.mytiki.capture.receipt.Configuration
+import com.mytiki.capture.receipt.account.Account
+import com.mytiki.capture.receipt.account.AccountCommon
 import com.mytiki.capture_receipt.example.Input
-import com.mytiki.sdk.capture.receipt.capacitor.account.Account
-import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import com.mytiki.sdk.capture.receipt.capacitor.ui.theme.CaptureReceiptTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -115,7 +117,9 @@ class MainActivity : AppCompatActivity() {
                             errorOutput = ""
                             loginOutput = ""
                             accountsOutput = ""
-                            CaptureReceipt.scan(this@MainActivity)
+                            MainScope().async {
+                                loginOutput = CaptureReceipt.scan(this@MainActivity).await().toString()
+                            }
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Login Email") {
@@ -159,11 +163,9 @@ class MainActivity : AppCompatActivity() {
 
                         MainButton(text = "Accounts") {
                             MainScope().async {
-                                val list =
-                                    CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }
-                                        .await()
-                                accountsOutput =
-                                    list.map { it.username to it.accountCommon.name }.toString()
+                                accountsOutput = CaptureReceipt.accounts(this@MainActivity) { errorOutput = it }
+                                    .map { it.username to it.accountCommon.name }
+                                    .toString()
                             }
                         }
 

@@ -1,0 +1,64 @@
+package com.mytiki.capture.receipt.physical
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.microblink.FrameCharacteristics
+import com.microblink.Media
+import com.microblink.ScanOptions
+import com.microblink.camera.ui.CameraScanActivity
+import com.microblink.core.ScanResults
+import com.mytiki.capture.receipt.CaptureReceipt
+import com.mytiki.capture.receipt.databinding.PhysicalActivityBinding
+import com.mytiki.capture.receipt.receipt.Receipt
+import com.mytiki.capture.receipt.utils.ApiService
+import java.io.IOException
+
+const val SCAN_RECEIPT_REQUEST = 420
+
+class PhysicalActivity : AppCompatActivity() {
+
+    private var _binding: PhysicalActivityBinding? = null
+    private val binding get() = _binding!!
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        _binding = PhysicalActivityBinding.inflate(layoutInflater)
+        val scanOptions = ScanOptions.newBuilder()
+            .frameCharacteristics(
+                FrameCharacteristics.newBuilder()
+                    .storeFrames(true)
+                    .compressionQuality(100)
+                    .externalStorage(false).build()
+            )
+            .logoDetection(true)
+            .build()
+
+        val bundle = Bundle()
+        bundle.putParcelable(CameraScanActivity.SCAN_OPTIONS_EXTRA, scanOptions)
+
+        val intent = Intent(this, CameraScanActivity::class.java)
+            .putExtra(CameraScanActivity.BUNDLE_EXTRA, bundle)
+        this.startActivityForResult(intent, SCAN_RECEIPT_REQUEST)
+    }
+
+    @Deprecated(
+        "Deprecated in Java", ReplaceWith(
+            "super.onActivityResult(requestCode, resultCode, data)",
+            "androidx.appcompat.app.AppCompatActivity"
+        )
+    )
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SCAN_RECEIPT_REQUEST && resultCode == Activity.RESULT_OK) {
+            val scanResults: ScanResults? = data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
+            val media: Media? = data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
+            val receipt = Receipt.opt(scanResults)
+            CaptureReceipt.physical.onScan(receipt)
+            ApiService.publishReceipts(receipt, {}){
+                throw IOException(it)
+            }
+        }
+        this@PhysicalActivity.finish()
+    }
+}
