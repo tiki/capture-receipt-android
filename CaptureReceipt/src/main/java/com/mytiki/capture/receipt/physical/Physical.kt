@@ -12,20 +12,13 @@ import android.content.Intent
 import android.content.pm.PackageManager.*
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.microblink.BlinkReceiptSdk
-import com.microblink.core.InitializeCallback
-import com.mytiki.capture.receipt.receipt.Receipt
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.MainScope
-import java.lang.Exception
 
 
 /**
  * This class provides functionality for scanning physical receipts using Microblink's SDK.
  */
 class Physical {
-
-    private var receipt = CompletableDeferred<Receipt?>()
 
     /**
      * Initializes the Microblink SDK with the provided configuration.
@@ -37,25 +30,12 @@ class Physical {
      */
     fun initialize(
         context: Context,
-        licenseKey: String,
-        productKey: String,
         onError: (error: Throwable) -> Unit,
     ): CompletableDeferred<Unit> {
         val isInitialized = CompletableDeferred<Unit>()
-        BlinkReceiptSdk.productIntelligenceKey(productKey)
-        BlinkReceiptSdk.initialize(
-            context,
-            licenseKey,
-            object : InitializeCallback {
-                override fun onComplete() {
-                    isInitialized.complete(Unit)
-                }
 
-                override fun onException(ex: Throwable) {
-                    onError(ex)
-                }
-            }
-        )
+        isInitialized.complete(Unit)
+
         return isInitialized
     }
 
@@ -68,8 +48,7 @@ class Physical {
      * @param reqPermissionsCallback Callback to request camera permissions if needed.
      */
     @RequiresApi(Build.VERSION_CODES.M)
-    suspend fun scan(activity: Activity): Receipt? {
-        receipt = CompletableDeferred<Receipt?>()
+    fun scan(activity: Activity) {
         if (activity.checkSelfPermission(Manifest.permission.CAMERA) == PERMISSION_DENIED) {
             val requestPermissionCode = 98734763
             activity.requestPermissions(
@@ -79,16 +58,8 @@ class Physical {
         } else {
             activity.startActivity(Intent(activity, PhysicalActivity::class.java))
         }
-        return receipt.await()
     }
 
-    fun onScan(_receipt: Receipt?){
-        if (_receipt != null) {
-            receipt.complete(_receipt)
-        } else {
-            receipt.completeExceptionally(
-                Exception("error scanning the receipt. please try again")
-            )
-        }
+    fun onScan(){
     }
 }

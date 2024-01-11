@@ -22,9 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mytiki.capture.receipt.CaptureReceipt
-import com.mytiki.capture.receipt.Configuration
-import com.mytiki.capture.receipt.account.Account
-import com.mytiki.capture.receipt.account.AccountCommon
 import com.mytiki.capture_receipt.example.Input
 import com.mytiki.sdk.capture.receipt.capacitor.ui.theme.CaptureReceiptTheme
 import kotlinx.coroutines.MainScope
