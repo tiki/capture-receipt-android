@@ -1,7 +1,4 @@
 package com.mytiki.capture.receipt.email
-
-import com.microblink.digital.Provider
-
 /**
  * Enumeration representing common email providers and their corresponding [Provider] values.
  *
