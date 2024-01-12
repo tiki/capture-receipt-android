@@ -66,27 +66,20 @@ android {
 }
 
 dependencies {
-    val mockkVersion =
-        if (project.hasProperty("mockkVersion")) rootProject.ext["mockkVersion"] as String else "1.13.5"
-    val junitVersion =
-        if (project.hasProperty("junitVersion")) rootProject.ext["junitVersion"] as String else "4.13.2"
-    val coroutinesVersion =
-        if (project.hasProperty("coroutinesVersion")) rootProject.ext["coroutinesVersion"] as String else "1.7.2"
-
     implementation("androidx.compose.ui:ui-android:1.5.4")
     implementation("com.mytiki:tiki-sdk-android:2.2.1")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+
 
     implementation("androidx.test:monitor:1.6.1")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
-    testImplementation("io.mockk:mockk:$mockkVersion")
-
-    testImplementation("junit:junit:$junitVersion")
-
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+    androidTestImplementation("io.mockk:mockk:1.13.9")
+    androidTestImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
 }

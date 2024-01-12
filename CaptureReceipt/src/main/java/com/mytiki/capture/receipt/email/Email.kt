@@ -12,8 +12,7 @@ import android.content.Context
  *
  * @constructor Creates an empty Email.
  */
-class Email(
-) {
+class Email() {
     private var googleAPIKey: String? = null
     private var outlookAPIKey: String? = null
 
