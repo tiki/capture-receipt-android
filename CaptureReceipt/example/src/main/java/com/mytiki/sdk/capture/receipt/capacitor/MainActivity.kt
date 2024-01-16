@@ -26,6 +26,8 @@ import com.mytiki.capture_receipt.example.Input
 import com.mytiki.sdk.capture.receipt.capacitor.ui.theme.CaptureReceiptTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 import java.util.UUID
 
@@ -109,23 +111,27 @@ class MainActivity : AppCompatActivity() {
                         )
                         Spacer(modifier = Modifier.height(30.dp))
                         MainButton(text = "Set License") {
+                            val date = Date()
 
                             CaptureReceipt.license.userId = "User 1"
-                            CaptureReceipt.license.expiry = Date()
+                            CaptureReceipt.license.expiry = Date.from(
+                                LocalDate
+                                    .of(2024, 12, 1)
+                                    .atStartOfDay(ZoneId.systemDefault())
+                                    .toInstant()
+                            )
                             CaptureReceipt.license.terms = "Terms Test"
                             CaptureReceipt.license.providerId = "be19730a-00d5-45f5-b18e-2e19eb25f311"
-//                            CaptureReceipt.license.providerId = "eyJraWQiOiIwZDJkYmFkMC04MWY1LTQ2MjUtOTRhOC05MWU4Mzk1ODFhYzgiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL215dGlraS5jb20iLCJzdWIiOiJ1c2VyOjQ3MGE0NzQwLTk3ZDItNGQxZi1iMjhmLTY0M2ViN2EzMDk4MiIsImF1ZCI6WyJ0cmFpbC5teXRpa2kuY29tIiwicHVibGlzaC5teXRpa2kuY29tIiwiYWNjb3VudC5teXRpa2kuY29tIl0sInNjcCI6WyJ0cmFpbCIsInB1Ymxpc2giLCJhY2NvdW50OmFkbWluIl0sImlhdCI6MTcwNTA5NzcxNH0.I7KvAN5lPOz6SFE1zZtyX8pwmS4QoJddMD9z9yPKfHuM-3181xxD0emZ43eaO69scNNhpoyaZ6qBQTk_WtsHqQ"
 
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         MainButton(text = "Create License") {
 
                             CaptureReceipt.license.providerId = "be19730a-00d5-45f5-b18e-2e19eb25f311"
-//                            CaptureReceipt.license.providerId = "eyJraWQiOiIwZDJkYmFkMC04MWY1LTQ2MjUtOTRhOC05MWU4Mzk1ODFhYzgiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL215dGlraS5jb20iLCJzdWIiOiJ1c2VyOjQ3MGE0NzQwLTk3ZDItNGQxZi1iMjhmLTY0M2ViN2EzMDk4MiIsImF1ZCI6WyJ0cmFpbC5teXRpa2kuY29tIiwicHVibGlzaC5teXRpa2kuY29tIiwiYWNjb3VudC5teXRpa2kuY29tIl0sInNjcCI6WyJ0cmFpbCIsInB1Ymxpc2giLCJhY2NvdW50OmFkbWluIl0sImlhdCI6MTcwNTA5NzcxNH0.I7KvAN5lPOz6SFE1zZtyX8pwmS4QoJddMD9z9yPKfHuM-3181xxD0emZ43eaO69scNNhpoyaZ6qBQTk_WtsHqQ"
                             MainScope().async {
                                 loginOutput = CaptureReceipt.license.create(
                                     this@MainActivity,
-                                ).toString()
+                                )
                             }
                         }
 
