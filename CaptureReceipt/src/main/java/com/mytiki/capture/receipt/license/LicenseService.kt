@@ -5,10 +5,16 @@ import com.mytiki.tiki_sdk_android.TikiSdk
 import com.mytiki.tiki_sdk_android.trail.LicenseRecord
 import com.mytiki.tiki_sdk_android.trail.Tag
 import com.mytiki.tiki_sdk_android.trail.TagCommon
+import com.mytiki.tiki_sdk_android.trail.TitleRecord
 import com.mytiki.tiki_sdk_android.trail.Use
 import com.mytiki.tiki_sdk_android.trail.Usecase
 import com.mytiki.tiki_sdk_android.trail.UsecaseCommon
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import java.util.Date
+import kotlin.jvm.Throws
 
 class LicenseService(
     var userId: String = "",
@@ -16,60 +22,102 @@ class LicenseService(
     var terms: String = "",
     var expiry: Date? = null
 ) {
+    @Throws(Exception::class)
     suspend fun create(
         context: Context,
-        _userId: String = "",
-        _providerId: String = "",
-        _terms: String = "",
-        _expiry: Date? = null
-    ): LicenseRecord {
-        checkUp(context, _userId, _providerId, _terms, _expiry)
-        val titleRecord = TikiSdk.trail.title.create(userId, listOf(Tag(TagCommon.PURCHASE_HISTORY))).await()
+        userId: String = "",
+        terms: String = "",
+        expiry: Date? = null
+    ): String {
+        val license = checkLicense(context, userId, terms, expiry)
+        val titleRecord = checkInitialization(context, license).await()
         return TikiSdk.trail.license.create(
             titleRecord.id,
             listOf(Use(listOf(Usecase(UsecaseCommon.ATTRIBUTION)))),
-            terms,
-            expiry,
+            license.terms,
+            license.expiry,
             "Receipt data"
-        ).await()
+        ).await().id
     }
+    @Throws(Exception::class)
     suspend fun get(
         context: Context,
-        _userId: String = "",
-        _providerId: String = "",
-        _terms: String = "",
-        _expiry: Date? = null
-    ): LicenseRecord? {
-        checkUp(context, _userId, _providerId, _terms, _expiry)
-        val list = TikiSdk.trail.license.all(TikiSdk.trail.title.get(userId).await().id).await()
-        return if(list.lastIndex !=-1) list[list.lastIndex] else null
-    }
-
-    private fun checkUp(
-        context: Context,
         userId: String = "",
-        providerId: String = "",
         terms: String = "",
         expiry: Date? = null
-    ){
+    ): String? {
+        val license = checkLicense(context, userId, terms, expiry)
+        val titleRecord = checkInitialization(context, license).await()
+        val list = TikiSdk.trail.license.all(titleRecord.id).await()
+        return if(list.lastIndex !=-1) list[list.lastIndex].id else null
+    }
+
+    @Throws(Exception::class)
+    private fun checkLicense(
+        context: Context,
+        userId: String = "",
+        terms: String = "",
+        expiry: Date? = null
+    ): LicenseService {
+        val license = LicenseService(this.userId,this.providerId,this.terms,this.expiry)
+
         if (userId.isNotEmpty()){
-            this.userId = userId
-        }
-        if (providerId.isNotEmpty()){
-            this.providerId = providerId
+            license.userId = userId
         }
         if (terms.isNotEmpty()){
-            this.terms = terms
+            license.terms = terms
         }
         if (expiry != null){
-            this.expiry = expiry
+            license.expiry = expiry
         }
-        if (this.userId.isEmpty() || this.providerId.isEmpty() || this.terms.isEmpty() || this.expiry == null){
-            throw Exception("Please set userId, providerId, terms and expiry parameters before calling any function")
+        if (license.userId.isEmpty() || license.providerId.isEmpty() || license.terms.isEmpty() || license.expiry == null){
+            throw IllegalArgumentException("Please set userId, providerId, terms and expiry parameters")
         } else {
-            if (!TikiSdk.isInitialized) {
-                TikiSdk.initialize(this.userId, this.providerId, context) {}
+            if (!TikiSdk.isInitialized || TikiSdk.id != license.userId) {
+
+                TikiSdk.initialize(license.userId, license.providerId, context) {}
             }
+        }
+        return license
+    }
+    @Throws(Exception::class)
+    private fun checkInitialization(
+        context: Context,
+        license: LicenseService,
+    ): CompletableDeferred<TitleRecord> {
+        val title = CompletableDeferred<TitleRecord>()
+        if (license.userId.isEmpty() || license.providerId.isEmpty() || license.terms.isEmpty() || license.expiry == null) {
+            throw IllegalArgumentException("Please set userId, providerId, terms and expiry parameters")
+        } else {
+            if (!TikiSdk.isInitialized || TikiSdk.id != license.userId) {
+                var titleRecord: TitleRecord? = null
+
+                MainScope().async {
+                    val deferredTikiSdk =
+                        TikiSdk.initialize(userId, license!!.providerId, context)
+                    deferredTikiSdk.await()
+
+                    try {
+                        titleRecord = TikiSdk.trail.title.get(userId).await()
+                        title.complete(titleRecord!!)
+                    } catch (ex: Exception) {
+                        throw ex
+                    }
+
+                    if (titleRecord == null) {
+                        try {
+                            titleRecord = TikiSdk.trail.title.create(
+                                userId,
+                                listOf(Tag(TagCommon.PURCHASE_HISTORY))
+                            ).await()
+                            title.complete(titleRecord!!)
+                        } catch (ex: Exception) {
+                            throw ex
+                        }
+                    }
+                }
+            }
+            return title
         }
     }
 }

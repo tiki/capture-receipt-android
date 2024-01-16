@@ -16,12 +16,11 @@ class LicenseServiceTest {
         val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
         val license = LicenseService()
         Assert.assertThrows(
-            "Please set userId, providerId, terms and expiry parameters before calling any function",
+            "Please set userId, providerId, terms and expiry parameters",
             Exception::class.java
         ){
             MainScope().async {
                 license.create(instrumentationContext)
-
             }
         }
     }
