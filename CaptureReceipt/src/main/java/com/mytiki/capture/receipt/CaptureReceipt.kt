@@ -13,6 +13,7 @@ import com.mytiki.capture.receipt.email.Email
 import com.mytiki.capture.receipt.email.EmailType
 import com.mytiki.capture.receipt.license.LicenseService
 import com.mytiki.capture.receipt.physical.Physical
+import com.mytiki.capture.receipt.physical.ReceiptService
 import com.mytiki.tiki_sdk_android.trail.License
 import com.mytiki.tiki_sdk_android.trail.TitleRecord
 import kotlinx.coroutines.MainScope
@@ -25,6 +26,7 @@ object CaptureReceipt {
     val email: Email = Email()
     val physical: Physical = Physical()
     val license: LicenseService = LicenseService()
+    val receipt: ReceiptService = ReceiptService()
 
 
     /**
