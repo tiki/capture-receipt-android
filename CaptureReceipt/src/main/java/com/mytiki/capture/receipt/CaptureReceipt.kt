@@ -11,6 +11,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.mytiki.capture.receipt.email.Email
 import com.mytiki.capture.receipt.email.EmailType
+import com.mytiki.capture.receipt.license.LicenseService
 import com.mytiki.capture.receipt.physical.Physical
 import com.mytiki.tiki_sdk_android.trail.License
 import com.mytiki.tiki_sdk_android.trail.TitleRecord
@@ -20,12 +21,11 @@ import kotlinx.coroutines.async
  * The CaptureReceipt object provides methods to interact with the TIKI Capture Receipt SDK.
  */
 object CaptureReceipt {
-    private var license: License? = null
-    private var userId: String? = null
-    private var title: TitleRecord? = null
 
     val email: Email = Email()
     val physical: Physical = Physical()
+    val license: LicenseService = LicenseService()
+
 
     /**
      * Initialize the Capture Receipt SDK.
