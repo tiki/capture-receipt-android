@@ -1,5 +1,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,8 @@ import com.mytiki.capture_receipt.example.Input
 import com.mytiki.sdk.capture.receipt.capacitor.ui.theme.CaptureReceiptTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import java.io.File
+import java.net.URI
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
@@ -146,6 +149,15 @@ class MainActivity : AppCompatActivity() {
                                 ).toString()
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MainButton(text = "upload Image") {
+                            val statusCode = CaptureReceipt.receipt.upload(
+                                "/Users/gabrielschuler/Developer/GitHub/capture-receipt-android/CaptureReceipt/example/src/main/res/drawable/tiki_logo.png"
+                            )
+                            loginOutput = statusCode.toString()
+                        }
+
 
 
 
